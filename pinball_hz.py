@@ -14,6 +14,20 @@ class Settings(object):
     def dim():
         return (Settings.window['width'], Settings.window['height'])
 
+    @staticmethod
+    def imagepath(name):
+        return os.path.join(Settings.path['image'], name)
+
+class Ball(pygame.sprite.Sprite):
+    def __init__(self) -> None:
+        super().__init__()
+        self.width = 25
+        self.height = 25
+        self.image = pygame.image.load(Settings.imagepath("ball.png")).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (Settings.window['width'] // 2, self.height // 2)
+
 class Game(object):
     def __init__(self):
         super().__init__()
@@ -22,6 +36,7 @@ class Game(object):
         self.screen = pygame.display.set_mode(Settings.dim())
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
+        self.ball = pygame.sprite.GroupSingle(Ball())
         self.running = False
 
     def run(self) -> None:
@@ -42,6 +57,7 @@ class Game(object):
     
     def draw(self) -> None:
         self.screen.fill((30, 30, 70))
+        self.ball.draw(self.screen)
         pygame.display.flip()
 
 if __name__ == '__main__':
