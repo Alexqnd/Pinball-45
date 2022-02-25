@@ -27,6 +27,16 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (Settings.window['width'] // 2, self.height // 2)
+        self.direction = (0, 0)
+
+    def update(self) -> None:
+        self.accelerate()
+        self.rect.move_ip(self.direction)
+
+    def accelerate(self) -> None:
+        new_direction_x = self.direction[0]
+        new_direction_y = 10
+        self.direction = (new_direction_x, new_direction_y)
 
 class Game(object):
     def __init__(self):
@@ -44,6 +54,7 @@ class Game(object):
         while self.running:
             self.clock.tick(Settings.fps)
             self.watch_for_events()
+            self.update()
             self.draw()
         pygame.quit()
 
@@ -54,6 +65,9 @@ class Game(object):
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
+
+    def update(self) -> None:
+        self.ball.update()
     
     def draw(self) -> None:
         self.screen.fill((30, 30, 70))
