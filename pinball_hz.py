@@ -20,6 +20,7 @@ class Settings(object):
     def imagepath(name):
         return os.path.join(Settings.path['image'], name)
 
+#Ball on the Pinball-table
 class Ball(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
@@ -40,6 +41,7 @@ class Ball(pygame.sprite.Sprite):
         new_direction_y = self.direction[1]
         self.direction = (new_direction_x, new_direction_y)
 
+#Returns if a certain time has passed
 class Timer(object):
     def __init__(self, duration, with_start = True):
         self.duration = duration
@@ -59,6 +61,7 @@ class Timer(object):
         if self.duration < 0:
             self.duration = 0
 
+#Deployes the ball where it is in a given angle with a given force
 class AutoDeploy360(pygame.sprite.Sprite):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__()
@@ -74,6 +77,7 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.ball.sprite.direction = (direction_x, direction_y) 
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
+#For testing the ball-physics. Inherits from AutoDeploy. It redeploys the ball after a certain time
 class ReDeploy360(AutoDeploy360):
     def __init__(self, ball, pos_x, pos_y, angle, force, time) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
@@ -83,7 +87,7 @@ class ReDeploy360(AutoDeploy360):
         if self.timer.is_next_stop_reached():
             self.deploy()
 
-    
+#main class    
 class Game(object):
     def __init__(self):
         super().__init__()
