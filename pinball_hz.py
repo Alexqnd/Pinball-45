@@ -41,8 +41,9 @@ class Ball(pygame.sprite.Sprite):
         self.direction = (new_direction_x, new_direction_y)
 
 class AutoDeploy360(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, angle, force) -> None:
+    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__()
+        self.ball = ball
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.angle = angle
@@ -51,7 +52,8 @@ class AutoDeploy360(pygame.sprite.Sprite):
     def deploy(self) -> None:
         direction_x = - self.force * math.sin(math.radians(self.angle))
         direction_y = - self.force * math.cos(math.radians(self.angle))
-        return (self.pos_x, self.pos_y, direction_x, direction_y)
+        self.ball.sprite.direction = (direction_x, direction_y) 
+        self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
     
 class Game(object):
@@ -63,14 +65,12 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
-        self.autoD = pygame.sprite.GroupSingle(AutoDeploy360(500, 100, 200, 10)) 
+        self.autoD = pygame.sprite.GroupSingle(AutoDeploy360(self.ball, 500, 100, 160, 10)) 
         self.running = False
 
     def run(self) -> None:
         self.running = True
-        autoDvalues = self.autoD.sprite.deploy()
-        self.ball.sprite.rect.center = (autoDvalues[0], autoDvalues[1])
-        self.ball.sprite.direction = (autoDvalues[2], autoDvalues[3]) 
+        self.autoD.sprite.deploy()
         while self.running:
             self.clock.tick(Settings.fps)
             self.watch_for_events()
