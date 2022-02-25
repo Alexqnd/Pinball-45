@@ -2,6 +2,7 @@ from enum import auto
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN)
 import os
+import math
 
 class Settings(object):
     window = {'width': 800, 'height': 800}
@@ -48,9 +49,9 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.force = force
 
     def deploy(self) -> None:
-        self.direction_x = 0
-        self.direction_y = 1
-        return (self.pos_x, self.pos_y, self.direction_x, self.direction_y)
+        direction_x = - self.force * math.sin(math.radians(self.angle))
+        direction_y = - self.force * math.cos(math.radians(self.angle))
+        return (self.pos_x, self.pos_y, direction_x, direction_y)
 
     
 class Game(object):
@@ -62,15 +63,13 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
-        self.autoD = pygame.sprite.GroupSingle(AutoDeploy360(500, 100, 0, 1)) 
+        self.autoD = pygame.sprite.GroupSingle(AutoDeploy360(500, 100, 200, 10)) 
         self.running = False
 
     def run(self) -> None:
         self.running = True
         autoDvalues = self.autoD.sprite.deploy()
-        print(self.ball.sprite.direction)
         self.ball.sprite.rect.center = (autoDvalues[0], autoDvalues[1])
-        print(self.ball.sprite.rect.center)
         self.ball.sprite.direction = (autoDvalues[2], autoDvalues[3]) 
         while self.running:
             self.clock.tick(Settings.fps)
