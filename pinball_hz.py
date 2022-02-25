@@ -1,3 +1,4 @@
+from enum import auto
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN)
 import os
@@ -35,9 +36,23 @@ class Ball(pygame.sprite.Sprite):
 
     def accelerate(self) -> None:
         new_direction_x = self.direction[0]
-        new_direction_y = 10
+        new_direction_y = self.direction[1]
         self.direction = (new_direction_x, new_direction_y)
 
+class AutoDeploy360(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, angle, force) -> None:
+        super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.angle = angle
+        self.force = force
+
+    def deploy(self) -> None:
+        self.direction_x = 0
+        self.direction_y = 1
+        return (self.pos_x, self.pos_y, self.direction_x, self.direction_y)
+
+    
 class Game(object):
     def __init__(self):
         super().__init__()
@@ -47,10 +62,16 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
+        self.autoD = pygame.sprite.GroupSingle(AutoDeploy360(500, 100, 0, 1)) 
         self.running = False
 
     def run(self) -> None:
         self.running = True
+        autoDvalues = self.autoD.sprite.deploy()
+        print(self.ball.sprite.direction)
+        self.ball.sprite.rect.center = (autoDvalues[0], autoDvalues[1])
+        print(self.ball.sprite.rect.center)
+        self.ball.sprite.direction = (autoDvalues[2], autoDvalues[3]) 
         while self.running:
             self.clock.tick(Settings.fps)
             self.watch_for_events()
