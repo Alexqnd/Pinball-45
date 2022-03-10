@@ -70,6 +70,12 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.pos_y = pos_y
         self.angle = angle
         self.force = force
+        self.width = 25
+        self.height = 25
+        self.image = pygame.image.load(Settings.imagepath("autodeploy360.png")).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.pos_x, self.pos_y)
 
     def deploy(self) -> None:
         direction_x = - self.force * math.sin(math.radians(self.angle))
@@ -97,7 +103,7 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
-        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 160, 10, 1000)) 
+        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 160, 2, 1000)) 
         self.running = False
 
     def run(self) -> None:
@@ -123,6 +129,7 @@ class Game(object):
     
     def draw(self) -> None:
         self.screen.fill((30, 30, 70))
+        self.redeploy.draw(self.screen)
         self.ball.draw(self.screen)
         pygame.display.flip()
 
