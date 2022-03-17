@@ -1,6 +1,6 @@
 from enum import auto
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_KP_PLUS, K_KP_MINUS)
 import os
 import math
 
@@ -50,7 +50,7 @@ class Timer(object):
         else:
             self.next = pygame.time.get_ticks() + self.duration
 
-    def is_next_stop_reached(self):
+    def is_next_stop_reached(self) -> None:
         if pygame.time.get_ticks() > self.next:
             self.next = pygame.time.get_ticks() + self.duration
             return True
@@ -73,8 +73,8 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.width = 25
         self.height = 25
         self.image = pygame.image.load(Settings.imagepath("autodeploy360.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image, self.angle)
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
@@ -83,6 +83,43 @@ class AutoDeploy360(pygame.sprite.Sprite):
         direction_y = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.direction = (direction_x, direction_y) 
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
+
+#Controls the deployer
+    def rotate_left(self) -> None:
+        self.angle += 22.5
+        if self.angle >= 360:
+            self.angle -= 360
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+    
+    def rotate_right(self) -> None:
+        self.angle -= 22.5
+        if self.angle < 0:
+            self.angle += 360
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+
+    def increase_force(self) -> None:
+        self.force += 1
+    
+    def decrease_force(self) -> None:
+        self.force -= 1
+
+    def move_up(self) -> None:
+        self.pos_y -= 20
+        self.rect.center = (self.pos_x, self.pos_y)
+
+    def move_right(self) -> None:
+        self.pos_x += 20
+        self.rect.center = (self.pos_x, self.pos_y)
+
+    def move_down(self) -> None:
+        self.pos_y += 20
+        self.rect.center = (self.pos_x, self.pos_y)
+
+    def move_left(self) -> None:
+        self.pos_x -= 20
+        self.rect.center = (self.pos_x, self.pos_y)
 
 #For testing the ball-physics. Inherits from AutoDeploy. It redeploys the ball after a certain time
 class ReDeploy360(AutoDeploy360):
@@ -94,9 +131,14 @@ class ReDeploy360(AutoDeploy360):
         if self.timer.is_next_stop_reached():
             self.deploy()
 
+    def increase_time(self) -> None:
+        self.timer.duration += 200
+
+    def decrease_time(self) -> None:
+        self.timer.duration -= 200
 #main class    
 class Game(object):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         os.environ['SDL_VIDEO_WINDOW_POS'] = "10, 50"
         pygame.init()
@@ -123,6 +165,29 @@ class Game(object):
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
+                    
+                #Controls the deployer
+                elif event.key == K_LEFT:
+                    self.redeploy.sprite.rotate_left()
+                elif event.key == K_RIGHT:
+                    self.redeploy.sprite.rotate_right()
+                elif event.key == K_UP:
+                    self.redeploy.sprite.increase_force()
+                elif event.key == K_DOWN:
+                    self.redeploy.sprite.decrease_force()
+                elif event.key == K_w:
+                    self.redeploy.sprite.move_up()
+                elif event.key == K_d:
+                    self.redeploy.sprite.move_right()
+                elif event.key == K_s:
+                    self.redeploy.sprite.move_down()
+                elif event.key == K_a:
+                    self.redeploy.sprite.move_left()
+                elif  event.key == K_KP_PLUS:
+                    self.redeploy.sprite.increase_time()
+                elif  event.key == K_KP_MINUS:
+                    self.redeploy.sprite.decrease_time()
+                
 
     def update(self) -> None:
         self.redeploy.sprite.redeploy()
