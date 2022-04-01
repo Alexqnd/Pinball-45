@@ -6,7 +6,8 @@ import math
 
 class Settings(object):
     window = {'width': 800, 'height': 800}
-    fps = 60
+    fps = 100
+    deltatime = 1.0 / fps
     title = "Pinball-Hz"
     path = {}
     path['file'] = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +35,10 @@ class Ball(pygame.sprite.Sprite):
 
     def update(self) -> None:
         self.accelerate()
-        self.rect.move_ip(self.direction)
+        direction_x_delta = self.direction[0] * Settings.deltatime
+        direction_y_delta = self.direction[1] * Settings.deltatime
+        self.rect.centerx = self.rect.centerx + direction_x_delta
+        self.rect.centery = self.rect.centery + direction_y_delta
 
     def accelerate(self) -> None:
         new_direction_x = self.direction[0]
@@ -100,10 +104,10 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def increase_force(self) -> None:
-        self.force += 1
+        self.force += 50
     
     def decrease_force(self) -> None:
-        self.force -= 1
+        self.force -= 50
 
     def move_up(self) -> None:
         self.pos_y -= 20
@@ -129,6 +133,7 @@ class ReDeploy360(AutoDeploy360):
 
     def redeploy(self) -> None:
         if self.timer.is_next_stop_reached():
+            print(self.ball.sprite.rect.center)
             self.deploy()
 
     def increase_time(self) -> None:
@@ -146,7 +151,7 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
-        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 45, 5, 1000)) 
+        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 180, 500, 500)) 
         self.running = False
 
     def run(self) -> None:
