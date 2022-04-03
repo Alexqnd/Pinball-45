@@ -6,7 +6,7 @@ import math
 
 class Settings(object):
     window = {'width': 800, 'height': 800}
-    fps = 100
+    fps = 15
     deltatime = 1.0 / fps
     title = "Pinball-Hz"
     path = {}
@@ -31,14 +31,15 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (Settings.window['width'] // 2, self.height // 2)
+        self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = (0, 0)
 
     def update(self) -> None:
         self.accelerate()
-        direction_x_delta = self.direction[0] * Settings.deltatime
-        direction_y_delta = self.direction[1] * Settings.deltatime
-        self.rect.centerx = self.rect.centerx + direction_x_delta
-        self.rect.centery = self.rect.centery + direction_y_delta
+        self.pos[0] = self.direction[0] * Settings.deltatime
+        self.pos[1] = self.direction[1] * Settings.deltatime
+        self.rect.centerx += round(self.pos[0])
+        self.rect.centery += round(self.pos[1])
 
     def accelerate(self) -> None:
         new_direction_x = self.direction[0]
