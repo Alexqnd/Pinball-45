@@ -6,7 +6,7 @@ import math
 
 class Settings(object):
     window = {'width': 800, 'height': 800}
-    fps = 15
+    fps = 120
     deltatime = 1.0 / fps
     title = "Pinball-Hz"
     path = {}
@@ -134,7 +134,6 @@ class ReDeploy360(AutoDeploy360):
 
     def redeploy(self) -> None:
         if self.timer.is_next_stop_reached():
-            print(self.ball.sprite.rect.center)
             self.deploy()
 
     def increase_time(self) -> None:
@@ -158,7 +157,7 @@ class Game(object):
     def run(self) -> None:
         self.running = True
         while self.running:
-            self.clock.tick(Settings.fps)
+            Settings.deltatime = self.clock.tick(Settings.fps) / 1000
             self.watch_for_events()
             self.update()
             self.draw()
