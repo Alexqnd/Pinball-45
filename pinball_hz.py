@@ -6,7 +6,7 @@ import math
 
 class Settings(object):
     window = {'width': 800, 'height': 800}
-    fps = 120
+    fps = 240
     deltatime = 1.0 / fps
     title = "Pinball-Hz"
     path = {}
@@ -33,18 +33,14 @@ class Ball(pygame.sprite.Sprite):
         self.rect.center = (Settings.window['width'] // 2, self.height // 2)
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = (0, 0)
+        self.gravity = 981
 
     def update(self) -> None:
-        self.accelerate()
+        self.direction = (self.direction[0], self.direction[1] + self.gravity * Settings.deltatime)
         self.pos[0] = self.direction[0] * Settings.deltatime
         self.pos[1] = self.direction[1] * Settings.deltatime
         self.rect.centerx += round(self.pos[0])
         self.rect.centery += round(self.pos[1])
-
-    def accelerate(self) -> None:
-        new_direction_x = self.direction[0]
-        new_direction_y = self.direction[1]
-        self.direction = (new_direction_x, new_direction_y)
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -151,7 +147,7 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
-        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 180, 500, 500)) 
+        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 45, 400, 2000)) 
         self.running = False
 
     def run(self) -> None:
