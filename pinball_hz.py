@@ -133,10 +133,10 @@ class ReDeploy360(AutoDeploy360):
             self.deploy()
 
     def increase_time(self) -> None:
-        self.timer.duration += 200
+        self.timer.change_duration(200)
 
     def decrease_time(self) -> None:
-        self.timer.duration -= 200
+        self.timer.change_duration(-200)
 #main class    
 class Game(object):
     def __init__(self) -> None:
