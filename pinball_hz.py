@@ -6,7 +6,7 @@ import math
 
 class Settings(object):
     window = {'width': 800, 'height': 800}
-    fps = 240
+    fps = 120
     deltatime = 1.0 / fps
     title = "Pinball-Hz"
     path = {}
@@ -41,6 +41,16 @@ class Ball(pygame.sprite.Sprite):
         self.pos[1] = self.direction[1] * Settings.deltatime
         self.rect.centerx += round(self.pos[0])
         self.rect.centery += round(self.pos[1])
+
+class Wall(pygame.sprite.Sprite):
+    def __init__(self) -> None:
+        super().__init__()
+        self.width = 5
+        self.height = 50
+        self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (Settings.window['width'] // 2, self.height // 2)       
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -147,6 +157,8 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
+        self.walls = pygame.sprite.Group()
+        self.walls.add(Wall())
         self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 45, 400, 2000)) 
         self.running = False
 
@@ -198,6 +210,7 @@ class Game(object):
         self.screen.fill((30, 30, 70))
         self.redeploy.draw(self.screen)
         self.ball.draw(self.screen)
+        self.walls.draw(self.screen)
         pygame.display.flip()
 
 if __name__ == '__main__':
