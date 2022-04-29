@@ -178,6 +178,7 @@ class Game(object):
             Settings.deltatime = self.clock.tick(Settings.fps) / 1000
             self.watch_for_events()
             self.update()
+            self.collision()
             self.draw()
         pygame.quit()
 
@@ -210,7 +211,11 @@ class Game(object):
                     self.redeploy.sprite.increase_time()
                 elif  event.key == K_KP_MINUS:
                     self.redeploy.sprite.decrease_time()
-                
+
+    def collision(self) -> None:
+        if pygame.sprite.groupcollide(self.ball, self.walls, False, False, pygame.sprite.collide_mask):
+            print("reflect")
+
     def update(self) -> None:
         self.redeploy.sprite.redeploy()
         self.ball.update()
