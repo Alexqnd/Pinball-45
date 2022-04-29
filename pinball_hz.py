@@ -38,7 +38,8 @@ class Ball(pygame.sprite.Sprite):
         self.gravity = 981
 
     def update(self) -> None:
-        self.direction = (self.direction[0], self.direction[1] + self.gravity * Settings.deltatime)
+        self.direction[1] = self.direction[1] + self.gravity * Settings.deltatime
+        print(type(self.direction))
         self.pos[0] = self.direction[0] * Settings.deltatime
         self.pos[1] = self.direction[1] * Settings.deltatime
         self.rect.centerx += round(self.pos[0])
@@ -96,9 +97,8 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.rect.center = (self.pos_x, self.pos_y)
 
     def deploy(self) -> None:
-        direction_x = - self.force * math.sin(math.radians(self.angle))
-        direction_y = - self.force * math.cos(math.radians(self.angle))
-        self.ball.sprite.direction = (direction_x, direction_y) 
+        self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
+        self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
 
