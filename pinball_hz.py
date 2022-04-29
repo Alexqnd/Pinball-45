@@ -32,7 +32,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (Settings.window['width'] // 2, self.height // 2)
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
-        self.direction = (0, 0)
+        self.direction = pygame.Vector2(0, 0)
         self.gravity = 981
 
     def update(self) -> None:
