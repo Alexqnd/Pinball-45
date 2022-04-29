@@ -37,9 +37,11 @@ class Ball(pygame.sprite.Sprite):
         self.direction = pygame.Vector2(0, 0)
         self.gravity = 981
 
+    def reflect(self) -> None:
+        self.direction = self.direction.reflect(pygame.Vector2(0, -1))
+
     def update(self) -> None:
         self.direction[1] = self.direction[1] + self.gravity * Settings.deltatime
-        print(type(self.direction))
         self.pos[0] = self.direction[0] * Settings.deltatime
         self.pos[1] = self.direction[1] * Settings.deltatime
         self.rect.centerx += round(self.pos[0])
@@ -50,12 +52,12 @@ class Ball(pygame.sprite.Sprite):
 class Wall(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
-        self.width = 5
-        self.height = 50
+        self.width = 50
+        self.height = 5
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (Settings.window['width'] // 2, self.height // 2)       
+        self.rect.center = (Settings.window['width'] // 2, 30)       
 
 
 #Returns if a certain time has passed
@@ -155,6 +157,8 @@ class ReDeploy360(AutoDeploy360):
 
     def decrease_time(self) -> None:
         self.timer.change_duration(-200)
+
+
 #main class    
 class Game(object):
     def __init__(self) -> None:
@@ -167,7 +171,7 @@ class Game(object):
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.walls = pygame.sprite.Group()
         self.walls.add(Wall())
-        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 500, 100, 45, 400, 2000)) 
+        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600, 2000)) 
         self.running = False
 
     def run(self) -> None:
@@ -212,7 +216,7 @@ class Game(object):
 
     def collision(self) -> None:
         if pygame.sprite.groupcollide(self.ball, self.walls, False, False, pygame.sprite.collide_mask):
-            print("reflect")
+            self.ball.sprite.reflect()
 
     def update(self) -> None:
         self.redeploy.sprite.redeploy()
