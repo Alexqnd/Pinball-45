@@ -4,6 +4,7 @@ from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_
 import os
 import math
 
+
 class Settings(object):
     window = {'width': 800, 'height': 800}
     fps = 120
@@ -20,6 +21,7 @@ class Settings(object):
     @staticmethod
     def imagepath(name):
         return os.path.join(Settings.path['image'], name)
+
 
 #Ball on the Pinball-table
 class Ball(pygame.sprite.Sprite):
@@ -42,6 +44,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.centerx += round(self.pos[0])
         self.rect.centery += round(self.pos[1])
 
+
+#Walls of the table to keep the ball inside
 class Wall(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
@@ -51,6 +55,7 @@ class Wall(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (Settings.window['width'] // 2, self.height // 2)       
+
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -71,6 +76,7 @@ class Timer(object):
         self.duration += delta
         if self.duration < 0:
             self.duration = 0
+
 
 #Deployes the ball where it is in a given angle with a given force
 class AutoDeploy360(pygame.sprite.Sprite):
@@ -94,6 +100,7 @@ class AutoDeploy360(pygame.sprite.Sprite):
         direction_y = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.direction = (direction_x, direction_y) 
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
+
 
 #Controls the deployer
     def rotate_left(self) -> None:
@@ -132,6 +139,7 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.pos_x -= 20
         self.rect.center = (self.pos_x, self.pos_y)
 
+
 #For testing the ball-physics. Inherits from AutoDeploy. It redeploys the ball after a certain time
 class ReDeploy360(AutoDeploy360):
     def __init__(self, ball, pos_x, pos_y, angle, force, time) -> None:
@@ -147,6 +155,8 @@ class ReDeploy360(AutoDeploy360):
 
     def decrease_time(self) -> None:
         self.timer.duration -= 200
+
+
 #main class    
 class Game(object):
     def __init__(self) -> None:
@@ -201,7 +211,6 @@ class Game(object):
                 elif  event.key == K_KP_MINUS:
                     self.redeploy.sprite.decrease_time()
                 
-
     def update(self) -> None:
         self.redeploy.sprite.redeploy()
         self.ball.update()
