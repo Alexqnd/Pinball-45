@@ -50,14 +50,14 @@ class Ball(pygame.sprite.Sprite):
 
 #Walls of the table to keep the ball inside
 class Wall(pygame.sprite.Sprite):
-    def __init__(self) -> None:
+    def __init__(self, size, pos_x, pos_y) -> None:
         super().__init__()
-        self.width = 50
-        self.height = 5
+        self.size = size
+        self.width = 5
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (Settings.window['width'] // 2, 30)       
+        self.rect.center = (pos_x, pos_y)   
 
 
 #Returns if a certain time has passed
@@ -170,7 +170,8 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.walls = pygame.sprite.Group()
-        self.walls.add(Wall())
+        self.walls.add(Wall(50, 100, 200))
+        self.walls.add(Wall(200, 50, 200))
         self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600, 2000)) 
         self.running = False
 
