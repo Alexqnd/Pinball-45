@@ -63,10 +63,8 @@ class WallV(Wall):
     def reflect(self, ball):
         if ball.sprite.direction[0] < 0:
             ball.sprite.rect.left = self.rect.right + 1
-            print("left")
         else:
             ball.sprite.rect.right = self.rect.left - 1
-            print("right")
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
 
@@ -80,11 +78,9 @@ class WallH(Wall):
     def reflect(self, ball):
         if ball.sprite.direction[1] < 0:
             ball.sprite.rect.top = self.rect.bottom + 1
-            print("top")
         else:
             ball.sprite.rect.bottom = self.rect.top - 1
-            print("bottom")
-            ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
+        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
 #Returns if a certain time has passed
 class Timer(object):
