@@ -130,16 +130,18 @@ class Deploy(pygame.sprite.Sprite):
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
+    def generate_rect(self) -> None:
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.pos_x, self.pos_y)
 
 #For testing the ball-physics. Inherits from Deploy. Ball can be placed again with the r-key
 class DebugDeploy(Deploy):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
         self.image = pygame.image.load(Settings.imagepath("debugdeploy.png")).convert_alpha()
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.pos_x, self.pos_y)
+        self.generate_rect()
     
     def rotate_left(self) -> None:
         self.angle += 22.5
