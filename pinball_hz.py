@@ -37,9 +37,6 @@ class Ball(pygame.sprite.Sprite):
         self.direction = pygame.Vector2(0, 0)
         self.gravity = 981
 
-    def reflect(self) -> None:
-        self.direction = self.direction.reflect(pygame.Vector2(0, -1))
-
     def update(self) -> None:
         self.direction[1] = self.direction[1] + self.gravity * Settings.deltatime
         self.pos[0] = self.direction[0] * Settings.deltatime
@@ -61,14 +58,21 @@ class Wallh(Wall):
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect = (pos_x, pos_y)
+        self.rect.topleft = (pos_x, pos_y)
+
+    def reflect(self, ball):
+        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
+
 
 class Wallv(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.size, self.width)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect = (pos_x, pos_y)
+        self.rect.topleft = (pos_x, pos_y)
+
+    def reflect(self, ball):
+            ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -230,8 +234,9 @@ class Game(object):
                     self.redeploy.sprite.decrease_time()
 
     def collision(self) -> None:
-        if pygame.sprite.groupcollide(self.ball, self.walls, False, False, pygame.sprite.collide_mask):
-            self.ball.sprite.reflect()
+        collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
+        for wall in collide:
+            wall.reflect(self.ball)
 
     def update(self) -> None:
         self.redeploy.sprite.redeploy()
