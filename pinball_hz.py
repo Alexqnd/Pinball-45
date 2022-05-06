@@ -1,8 +1,10 @@
+import abc
 from enum import auto
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_KP_PLUS, K_KP_MINUS)
 import os
 import math
+from abc import ABC, abstractmethod
 
 
 class Settings(object):
@@ -46,21 +48,28 @@ class Ball(pygame.sprite.Sprite):
 
 
 #Walls of the table to keep the ball inside
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, size) -> None:
+class Wall(pygame.sprite.Sprite, ABC):
+    def __init__(self, x, y, size) -> None:
         super().__init__()
         self.size = size
         self.width = 5
+        self.pos_x = x
+        self.pos_y = y
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
+
+    @abstractmethod
+    def reflect(self, ball):
+        pass
 
 class WallV(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.topleft = (pos_x, pos_y)
+        self.rect.topleft = (self.pos_x, self.pos_y)
 
     def reflect(self, ball):
+        super(WallV, self).reflect(ball)
         if ball.sprite.direction[0] < 0:
             ball.sprite.rect.left = self.rect.right + 1
         else:
@@ -73,9 +82,10 @@ class WallH(Wall):
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.size, self.width)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.topleft = (pos_x, pos_y)
+        self.rect.topleft = (self.pos_x, self.pos_y)
 
     def reflect(self, ball):
+        super(WallH, self).reflect(ball)
         if ball.sprite.direction[1] < 0:
             ball.sprite.rect.top = self.rect.bottom + 1
         else:
