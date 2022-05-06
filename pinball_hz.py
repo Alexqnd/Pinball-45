@@ -117,7 +117,12 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
-#Controls the deployer
+
+#For testing the ball-physics. Inherits from AutoDeploy. Ball can be redeployed with the r-key
+class ReDeploy360(AutoDeploy360):
+    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
+        super().__init__(ball, pos_x, pos_y, angle, force)
+    
     def rotate_left(self) -> None:
         self.angle += 22.5
         if self.angle >= 360:
@@ -153,14 +158,6 @@ class AutoDeploy360(pygame.sprite.Sprite):
     def move_left(self) -> None:
         self.pos_x -= 20
         self.rect.center = (self.pos_x, self.pos_y)
-
-
-#For testing the ball-physics. Inherits from AutoDeploy. It redeploys the ball after a certain time
-class ReDeploy360(AutoDeploy360):
-    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
-        super().__init__(ball, pos_x, pos_y, angle, force)
-        pass
-
 
 #main class    
 class Game(object):
@@ -222,10 +219,6 @@ class Game(object):
                     self.redeploy.sprite.move_left()
                 elif event.key == K_r:
                     self.redeploy.sprite.deploy()
-                elif  event.key == K_KP_PLUS:
-                    self.redeploy.sprite.increase_time()
-                elif  event.key == K_KP_MINUS:
-                    self.redeploy.sprite.decrease_time()
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
