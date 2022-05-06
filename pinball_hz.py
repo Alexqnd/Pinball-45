@@ -181,11 +181,12 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
+        self.wall_margin = 100
         self.walls = pygame.sprite.Group()
-        self.walls.add(Wallh(100, 200, 400))
-        self.walls.add(Wallh(50, 200, 400))
-        self.walls.add(Wallv(100, 200, 400))
-        self.walls.add(Wallv(50, 200, 400))
+        self.walls.add(Wallh(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
+        self.walls.add(Wallh(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
+        self.walls.add(Wallv(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
+        self.walls.add(Wallv(self.wall_margin, Settings.window["height"] - self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
         self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600, 2000)) 
         self.running = False
 
