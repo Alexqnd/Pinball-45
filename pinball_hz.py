@@ -61,14 +61,14 @@ class Wallh(Wall):
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (pos_x, pos_y)
+        self.rect = (pos_x, pos_y)
 
 class Wallv(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.size, self.width)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (pos_x, pos_y)
+        self.rect = (pos_x, pos_y)
 
 #Returns if a certain time has passed
 class Timer(object):
