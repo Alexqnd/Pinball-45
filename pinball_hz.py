@@ -32,7 +32,7 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.image.load(Settings.imagepath("ball.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (Settings.window['width'] // 2, self.height // 2)
+        self.rect.center = (Settings.window['width'] // 2, 50)
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
         self.gravity = 981
@@ -61,6 +61,12 @@ class WallV(Wall):
         self.rect.topleft = (pos_x, pos_y)
 
     def reflect(self, ball):
+        if ball.sprite.direction[0] < 0:
+            ball.sprite.rect.left = self.rect.right + 1
+            print("left")
+        else:
+            ball.sprite.rect.right = self.rect.left - 1
+            print("right")
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
 
@@ -72,6 +78,12 @@ class WallH(Wall):
         self.rect.topleft = (pos_x, pos_y)
 
     def reflect(self, ball):
+        if ball.sprite.direction[1] < 0:
+            ball.sprite.rect.top = self.rect.bottom + 1
+            print("top")
+        else:
+            ball.sprite.rect.bottom = self.rect.top - 1
+            print("bottom")
             ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
 #Returns if a certain time has passed
