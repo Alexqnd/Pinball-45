@@ -55,10 +55,20 @@ class Wall(pygame.sprite.Sprite):
         self.size = size
         self.width = 5
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
+
+class Wallh(Wall):
+    def __init__(self, pos_x, pos_y, size) -> None:
+        super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (pos_x, pos_y)   
+        self.rect.center = (pos_x, pos_y)
 
+class Wallv(Wall):
+    def __init__(self, pos_x, pos_y, size) -> None:
+        super().__init__(pos_x, pos_y, size)
+        self.image = pygame.transform.scale(self.image, (self.size, self.width)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (pos_x, pos_y)
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -172,8 +182,10 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.walls = pygame.sprite.Group()
-        self.walls.add(Wall(100, 200, 400))
-        self.walls.add(Wall(50, 200, 400))
+        self.walls.add(Wallh(100, 200, 400))
+        self.walls.add(Wallh(50, 200, 400))
+        self.walls.add(Wallv(100, 200, 400))
+        self.walls.add(Wallv(50, 200, 400))
         self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600, 2000)) 
         self.running = False
 
