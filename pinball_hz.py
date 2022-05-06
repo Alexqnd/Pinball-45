@@ -130,7 +130,7 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
-    def deploy(self) -> None:
+    def place_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
@@ -236,7 +236,7 @@ class Game(object):
                 elif event.key == K_a:
                     self.redeploy.sprite.move_left()
                 elif event.key == K_r:
-                    self.redeploy.sprite.deploy()
+                    self.redeploy.sprite.place_ball()
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
