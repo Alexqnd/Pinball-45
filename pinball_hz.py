@@ -156,13 +156,12 @@ class AutoDeploy360(pygame.sprite.Sprite):
 class ReDeploy360(AutoDeploy360):
     def __init__(self, ball, pos_x, pos_y, angle, force, time) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
-        self.time = time
-        self.timer = Timer(self.time)
+        self.timer = Timer(time)
 
     def redeploy(self) -> None:
         if self.timer.is_next_stop_reached():
             self.deploy()
-            print(f'pos_x: {self.pos_x}; pos_y: {self.pos_y}; angle: {self.angle}; force: {self.force}; time: {self.time}')
+            print(f'pos_x: {self.pos_x}; pos_y: {self.pos_y}; angle: {self.angle}; force: {self.force}; time: {self.timer.duration}')
 
     def increase_time(self) -> None:
         self.timer.change_duration(200)
