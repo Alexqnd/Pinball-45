@@ -1,6 +1,6 @@
 from enum import auto
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_KP_PLUS, K_KP_MINUS)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_KP_PLUS, K_KP_MINUS)
 import os
 import math
 
@@ -117,7 +117,6 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
-
 #Controls the deployer
     def rotate_left(self) -> None:
         self.angle += 22.5
@@ -158,20 +157,9 @@ class AutoDeploy360(pygame.sprite.Sprite):
 
 #For testing the ball-physics. Inherits from AutoDeploy. It redeploys the ball after a certain time
 class ReDeploy360(AutoDeploy360):
-    def __init__(self, ball, pos_x, pos_y, angle, force, time) -> None:
+    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
-        self.timer = Timer(time)
-
-    def redeploy(self) -> None:
-        if self.timer.is_next_stop_reached():
-            self.deploy()
-            print(f'pos_x: {self.pos_x}; pos_y: {self.pos_y}; angle: {self.angle}; force: {self.force}; time: {self.timer.duration}')
-
-    def increase_time(self) -> None:
-        self.timer.change_duration(200)
-
-    def decrease_time(self) -> None:
-        self.timer.change_duration(-200)
+        pass
 
 
 #main class    
@@ -185,7 +173,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
-        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600, 2000)) 
+        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600)) 
         self.running = False
 
     def wallcreation(self) -> None:
@@ -215,7 +203,7 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     self.running = False
                     
-                #Controls the deployer
+                #Controls the redeployer
                 elif event.key == K_LEFT:
                     self.redeploy.sprite.rotate_left()
                 elif event.key == K_RIGHT:
@@ -232,6 +220,8 @@ class Game(object):
                     self.redeploy.sprite.move_down()
                 elif event.key == K_a:
                     self.redeploy.sprite.move_left()
+                elif event.key == K_r:
+                    self.redeploy.sprite.deploy()
                 elif  event.key == K_KP_PLUS:
                     self.redeploy.sprite.increase_time()
                 elif  event.key == K_KP_MINUS:
@@ -243,7 +233,6 @@ class Game(object):
             wall.reflect(self.ball)
 
     def update(self) -> None:
-        self.redeploy.sprite.redeploy()
         self.ball.update()
     
     def draw(self) -> None:
