@@ -194,7 +194,8 @@ class Game(object):
         self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
-        self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
+        self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
+        self.walls.add(WallH(self.wall_margin + (Settings.window["width"] - self.wall_margin * 2) / 2 + 25, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
 
     def run(self) -> None:
         self.running = True
