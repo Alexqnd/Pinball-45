@@ -53,7 +53,7 @@ class Wall(pygame.sprite.Sprite):
         self.width = 5
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
 
-class Wallh(Wall):
+class WallV(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
@@ -64,7 +64,7 @@ class Wallh(Wall):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
 
-class Wallv(Wall):
+class WallH(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image = pygame.transform.scale(self.image, (self.size, self.width)).convert_alpha()
@@ -191,10 +191,10 @@ class Game(object):
     def wallcreation(self) -> None:
         self.walls = pygame.sprite.Group()
         self.wall_margin = 100
-        self.walls.add(Wallh(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
-        self.walls.add(Wallh(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
-        self.walls.add(Wallv(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
-        self.walls.add(Wallv(self.wall_margin, Settings.window["height"] - self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
+        self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
+        self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
+        self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
 
     def run(self) -> None:
         self.running = True
