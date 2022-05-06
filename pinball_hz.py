@@ -114,7 +114,7 @@ class Timer(object):
 
 
 #Deployes the ball where it is in a given angle with a given force
-class AutoDeploy360(pygame.sprite.Sprite):
+class Deploy(pygame.sprite.Sprite):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__()
         self.ball = ball
@@ -124,11 +124,6 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.force = force
         self.width = 25
         self.height = 25
-        self.image = pygame.image.load(Settings.imagepath("autodeploy360.png")).convert_alpha()
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.pos_x, self.pos_y)
 
     def place_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
@@ -136,10 +131,15 @@ class AutoDeploy360(pygame.sprite.Sprite):
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
 
-#For testing the ball-physics. Inherits from AutoDeploy. Ball can be redeployed with the r-key
-class ReDeploy360(AutoDeploy360):
+#For testing the ball-physics. Inherits from Deploy. Ball can be placed again with the r-key
+class DebugDeploy(Deploy):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
+        self.image = pygame.image.load(Settings.imagepath("debugdeploy.png")).convert_alpha()
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.pos_x, self.pos_y)
     
     def rotate_left(self) -> None:
         self.angle += 22.5
@@ -188,7 +188,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
-        self.redeploy = pygame.sprite.GroupSingle(ReDeploy360(self.ball, 440, 120, 22.5, 600)) 
+        self.debugdeploy = pygame.sprite.GroupSingle(DebugDeploy(self.ball, 440, 120, 22.5, 600)) 
         self.running = False
 
     def wallcreation(self) -> None:
@@ -218,25 +218,25 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     self.running = False
                     
-                #Controls the redeployer
+                #Controls the debugdeployer
                 elif event.key == K_LEFT:
-                    self.redeploy.sprite.rotate_left()
+                    self.debugdeploy.sprite.rotate_left()
                 elif event.key == K_RIGHT:
-                    self.redeploy.sprite.rotate_right()
+                    self.debugdeploy.sprite.rotate_right()
                 elif event.key == K_UP:
-                    self.redeploy.sprite.increase_force()
+                    self.debugdeploy.sprite.increase_force()
                 elif event.key == K_DOWN:
-                    self.redeploy.sprite.decrease_force()
+                    self.debugdeploy.sprite.decrease_force()
                 elif event.key == K_w:
-                    self.redeploy.sprite.move_up()
+                    self.debugdeploy.sprite.move_up()
                 elif event.key == K_d:
-                    self.redeploy.sprite.move_right()
+                    self.debugdeploy.sprite.move_right()
                 elif event.key == K_s:
-                    self.redeploy.sprite.move_down()
+                    self.debugdeploy.sprite.move_down()
                 elif event.key == K_a:
-                    self.redeploy.sprite.move_left()
+                    self.debugdeploy.sprite.move_left()
                 elif event.key == K_r:
-                    self.redeploy.sprite.place_ball()
+                    self.debugdeploy.sprite.place_ball()
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -248,7 +248,7 @@ class Game(object):
     
     def draw(self) -> None:
         self.screen.fill((30, 30, 70))
-        self.redeploy.draw(self.screen)
+        self.debugdeploy.draw(self.screen)
         self.ball.draw(self.screen)
         self.walls.draw(self.screen)
         pygame.display.flip()
