@@ -114,7 +114,7 @@ class Timer(object):
 
 
 #Deployes the ball where it is in a given angle with a given force
-class Deploy(pygame.sprite.Sprite, ABC):
+class Deploy(pygame.sprite.Sprite):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__()
         self.ball = ball
@@ -125,7 +125,6 @@ class Deploy(pygame.sprite.Sprite, ABC):
         self.width = 25
         self.height = 25
 
-    @abstractmethod
     def place_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
@@ -143,9 +142,6 @@ class DebugDeploy(Deploy):
         super().__init__(ball, pos_x, pos_y, angle, force)
         self.image = pygame.image.load(Settings.imagepath("debugdeploy.png")).convert_alpha()
         self.generate_rect()
-    
-    def place_ball(self):  
-        super(DebugDeploy, self).place_ball()
     
     def rotate_left(self) -> None:
         self.angle += 22.5
