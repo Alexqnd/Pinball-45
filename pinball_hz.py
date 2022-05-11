@@ -125,7 +125,7 @@ class Launcher(pygame.sprite.Sprite):
         self.width = 25
         self.height = 25
 
-    def place_ball(self) -> None:
+    def launch_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
@@ -136,7 +136,7 @@ class Launcher(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
-#For testing the ball-physics. Inherits from Launcher. Ball can be placed again with the r-key
+#For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
@@ -238,7 +238,7 @@ class Game(object):
                 elif event.key == K_a:
                     self.debuglauncher.sprite.move_left()
                 elif event.key == K_r:
-                    self.debuglauncher.sprite.place_ball()
+                    self.debuglauncher.sprite.launch_ball()
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
