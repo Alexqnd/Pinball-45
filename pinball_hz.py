@@ -113,8 +113,8 @@ class Timer(object):
             self.duration = 0
 
 
-#Deployes the ball where it is in a given angle with a given force
-class Deploy(pygame.sprite.Sprite):
+#Launches the ball where it is in a given angle with a given force
+class Launcher(pygame.sprite.Sprite):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__()
         self.ball = ball
@@ -136,11 +136,11 @@ class Deploy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
-#For testing the ball-physics. Inherits from Deploy. Ball can be placed again with the r-key
-class DebugDeploy(Deploy):
+#For testing the ball-physics. Inherits from Launcher. Ball can be placed again with the r-key
+class DebugLauncher(Launcher):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
         super().__init__(ball, pos_x, pos_y, angle, force)
-        self.image = pygame.image.load(Settings.imagepath("debugdeploy.png")).convert_alpha()
+        self.image = pygame.image.load(Settings.imagepath("debuglauncher.png")).convert_alpha()
         self.generate_rect()
     
     def rotate_left(self) -> None:
@@ -190,7 +190,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
-        self.debugdeploy = pygame.sprite.GroupSingle(DebugDeploy(self.ball, 440, 120, 22.5, 600)) 
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 22.5, 600)) 
         self.running = False
 
     def wallcreation(self) -> None:
@@ -220,25 +220,25 @@ class Game(object):
                 if event.key == K_ESCAPE:
                     self.running = False
                     
-                #Controls the debugdeployer
+                #Controls the DebugLauncher
                 elif event.key == K_LEFT:
-                    self.debugdeploy.sprite.rotate_left()
+                    self.debuglauncher.sprite.rotate_left()
                 elif event.key == K_RIGHT:
-                    self.debugdeploy.sprite.rotate_right()
+                    self.debuglauncher.sprite.rotate_right()
                 elif event.key == K_UP:
-                    self.debugdeploy.sprite.increase_force()
+                    self.debuglauncher.sprite.increase_force()
                 elif event.key == K_DOWN:
-                    self.debugdeploy.sprite.decrease_force()
+                    self.debuglauncher.sprite.decrease_force()
                 elif event.key == K_w:
-                    self.debugdeploy.sprite.move_up()
+                    self.debuglauncher.sprite.move_up()
                 elif event.key == K_d:
-                    self.debugdeploy.sprite.move_right()
+                    self.debuglauncher.sprite.move_right()
                 elif event.key == K_s:
-                    self.debugdeploy.sprite.move_down()
+                    self.debuglauncher.sprite.move_down()
                 elif event.key == K_a:
-                    self.debugdeploy.sprite.move_left()
+                    self.debuglauncher.sprite.move_left()
                 elif event.key == K_r:
-                    self.debugdeploy.sprite.place_ball()
+                    self.debuglauncher.sprite.place_ball()
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -250,7 +250,7 @@ class Game(object):
     
     def draw(self) -> None:
         self.screen.fill((30, 30, 70))
-        self.debugdeploy.draw(self.screen)
+        self.debuglauncher.draw(self.screen)
         self.ball.draw(self.screen)
         self.walls.draw(self.screen)
         pygame.display.flip()
