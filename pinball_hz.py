@@ -145,6 +145,8 @@ class ChargedLauncher(Launcher):
         self.charge = False
 
     def place_ball(self) -> None:
+        self.ball.sprite.direction[0] = 0
+        self.ball.sprite.direction[1] = 0
         self.ball.sprite.rect.centerx = self.pos_x
         self.ball.sprite.rect.bottom = self.pos_y
         
@@ -256,6 +258,8 @@ class Game(object):
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
+        if pygame.sprite.groupcollide(self.chargedlauncher, self.ball, False, False, pygame.sprite.collide_mask):
+            self.chargedlauncher.sprite.place_ball()
         for wall in collide:
             wall.reflect(self.ball)
 
