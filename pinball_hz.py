@@ -152,7 +152,6 @@ class ChargedLauncher(Launcher):
     def launch_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
-        print(self.force)
         self.ball.sprite.rect.bottom = self.rect.top - 1
         self.ball.sprite.rect.centerx = self.pos_x
         
