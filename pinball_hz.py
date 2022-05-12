@@ -136,6 +136,18 @@ class Launcher(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
+class ChargedLauncher(Launcher):
+    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
+        super().__init__(ball, pos_x, pos_y, angle, force)
+        self.image = pygame.image.load(Settings.imagepath("chargedlauncher.png")).convert_alpha()
+        self.generate_rect()
+        self.force = 0
+        self.charge = False
+
+    def place_ball(self) -> None:
+        self.ball.sprite.rect.centerx = self.pos_x
+        self.ball.sprite.rect.bottom = self.pos_y
+        
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
     def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
@@ -190,6 +202,8 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 0, 0))
+        self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 22.5, 600)) 
         self.running = False
 
@@ -252,6 +266,7 @@ class Game(object):
         self.screen.fill((30, 30, 70))
         self.debuglauncher.draw(self.screen)
         self.ball.draw(self.screen)
+        self.chargedlauncher.draw(self.screen)
         self.walls.draw(self.screen)
         pygame.display.flip()
 
