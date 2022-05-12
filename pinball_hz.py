@@ -1,7 +1,7 @@
 import abc
 from enum import auto
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_KP_PLUS, K_KP_MINUS)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_SPACE)
 import os
 import math
 from abc import ABC, abstractmethod
@@ -141,7 +141,6 @@ class ChargedLauncher(Launcher):
         super().__init__(ball, pos_x, pos_y, angle, force)
         self.image = pygame.image.load(Settings.imagepath("chargedlauncher.png")).convert_alpha()
         self.generate_rect()
-        self.force = 0
         self.charge = False
 
     def place_ball(self) -> None:
@@ -149,6 +148,13 @@ class ChargedLauncher(Launcher):
         self.ball.sprite.direction[1] = 0
         self.ball.sprite.rect.centerx = self.pos_x
         self.ball.sprite.rect.bottom = self.pos_y
+
+    def launch_ball(self) -> None:
+        self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
+        self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
+        print(self.force)
+        self.ball.sprite.rect.bottom = self.rect.top - 1
+        self.ball.sprite.rect.centerx = self.pos_x
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
@@ -204,7 +210,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 0, 0))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 0, 1000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 22.5, 600)) 
         self.running = False
@@ -235,6 +241,8 @@ class Game(object):
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
+                elif event.key == K_SPACE:
+                    self.chargedlauncher.sprite.launch_ball()
                     
                 #Controls the DebugLauncher
                 elif event.key == K_LEFT:
