@@ -225,7 +225,7 @@ class Game(object):
     def place_objects(self) -> None:
         self.wall_margin = 100
         self.wallcreation()
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 1000))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, Settings.window["width"] - self.wall_margin - 18, Settings.window["height"] - self.wall_margin - 40, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
 
@@ -233,6 +233,7 @@ class Game(object):
         self.walls = pygame.sprite.Group()
         self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin - 40, self.wall_margin + 40, Settings.window["height"] - self.wall_margin * 2 - 40))        
         self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
         self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
         self.walls.add(WallH(self.wall_margin + (Settings.window["width"] - self.wall_margin * 2) / 2 + 25, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
