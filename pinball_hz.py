@@ -219,15 +219,18 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
+        self.running = False
+        self.place_objects()
+
+    def place_objects(self) -> None:
+        self.wall_margin = 100
         self.wallcreation()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 1000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
-        self.running = False
 
     def wallcreation(self) -> None:
         self.walls = pygame.sprite.Group()
-        self.wall_margin = 100
         self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
