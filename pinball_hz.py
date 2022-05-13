@@ -1,4 +1,3 @@
-import abc
 from enum import auto
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_SPACE)
@@ -79,7 +78,6 @@ class WallV(Wall):
         self.rect_from_image(0)
 
     def reflect(self, ball):
-        super(WallV, self).reflect(ball)
         if ball.sprite.direction[0] < 0:
             ball.sprite.rect.left = self.rect.right + 1
         else:
@@ -93,7 +91,6 @@ class WallH(Wall):
         self.rect_from_image(90)
 
     def reflect(self, ball):
-        super(WallH, self).reflect(ball)
         if ball.sprite.direction[1] < 0:
             ball.sprite.rect.top = self.rect.bottom + 1
         else:
@@ -108,13 +105,11 @@ class WallDTB(Wall):
         self.rect_from_image(45)
 
     def reflect(self, ball):
-        super(WallDTB, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
         for i in range(1, 20):
             ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
             ball.sprite.rect.centery += ball.sprite.direction[1] / 100
             if not pygame.sprite.collide_mask(self, ball.sprite):
-                print(i)
                 break
 
 #Diagonal Wall bottom to top
@@ -124,13 +119,11 @@ class WallDBT(Wall):
         self.rect_from_image(315)
 
     def reflect(self, ball):
-        super(WallDBT, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         for i in range(1, 20):
             ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
             ball.sprite.rect.centery += ball.sprite.direction[1] / 100
             if not pygame.sprite.collide_mask(self, ball.sprite):
-                print(i)
                 break
 #Returns if a certain time has passed
 class Timer(object):
