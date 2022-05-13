@@ -55,7 +55,19 @@ class Wall(pygame.sprite.Sprite, ABC):
         self.width = 5
         self.pos_x = x
         self.pos_y = y
+
+    def rect_from_image(self, angle) -> None:
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
+        self.transform_image(angle)
+        self.generate_rect()
+
+    def transform_image(self, angle) -> None:
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, angle)
+
+    def generate_rect(self) -> None:
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.pos_x, self.pos_y)
 
     @abstractmethod
     def reflect(self, ball):
@@ -64,9 +76,7 @@ class Wall(pygame.sprite.Sprite, ABC):
 class WallV(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
-        self.image = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (self.pos_x, self.pos_y)
+        self.rect_from_image(0)
 
     def reflect(self, ball):
         super(WallV, self).reflect(ball)
@@ -80,9 +90,7 @@ class WallV(Wall):
 class WallH(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
-        self.image = pygame.transform.scale(self.image, (self.size, self.width)).convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (self.pos_x, self.pos_y)
+        self.rect_from_image(90)
 
     def reflect(self, ball):
         super(WallH, self).reflect(ball)
@@ -97,11 +105,7 @@ class WallH(Wall):
 class WallDTB(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
-        self.angle = 45
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (self.pos_x, self.pos_y)
+        self.rect_from_image(45)
 
     def reflect(self, ball):
         super(WallDTB, self).reflect(ball)
@@ -111,11 +115,7 @@ class WallDTB(Wall):
 class WallDBT(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
-        self.angle = 315
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (self.pos_x, self.pos_y)
+        self.rect_from_image(315)
 
     def reflect(self, ball):
         super(WallDBT, self).reflect(ball)
@@ -263,7 +263,7 @@ class Game(object):
         self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin - 40, self.wall_margin + 40, Settings.window["height"] - self.wall_margin * 2 - 40))   
-        self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))   
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallDBT(0, 0, Settings.window["height"] - self.wall_margin * 2))                  
         self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
         self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
