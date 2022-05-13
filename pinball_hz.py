@@ -115,7 +115,7 @@ class Timer(object):
 
 #Launches the ball where it is in a given angle with a given force
 class Launcher(pygame.sprite.Sprite):
-    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
+    def __init__(self, ball, pos_x, pos_y, force, angle = 0) -> None:
         super().__init__()
         self.ball = ball
         self.pos_x = pos_x
@@ -137,8 +137,8 @@ class Launcher(pygame.sprite.Sprite):
         self.rect.center = (self.pos_x, self.pos_y)
 
 class ChargedLauncher(Launcher):
-    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
-        super().__init__(ball, pos_x, pos_y, angle, force)
+    def __init__(self, ball, pos_x, pos_y, force) -> None:
+        super().__init__(ball, pos_x, pos_y, force)
         self.image = pygame.image.load(Settings.imagepath("chargedlauncher.png")).convert_alpha()
         self.generate_rect()
         self.charge = False
@@ -157,8 +157,8 @@ class ChargedLauncher(Launcher):
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
-    def __init__(self, ball, pos_x, pos_y, angle, force) -> None:
-        super().__init__(ball, pos_x, pos_y, angle, force)
+    def __init__(self, ball, pos_x, pos_y, force, angle) -> None:
+        super().__init__(ball, pos_x, pos_y, force, angle)
         self.image = pygame.image.load(Settings.imagepath("debuglauncher.png")).convert_alpha()
         self.generate_rect()
     
@@ -209,9 +209,9 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 0, 1000))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 1000))
         self.chargedlauncher.sprite.place_ball()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 22.5, 600)) 
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
         self.running = False
 
     def wallcreation(self) -> None:
