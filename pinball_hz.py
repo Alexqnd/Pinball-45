@@ -128,6 +128,8 @@ class Launcher(pygame.sprite.Sprite):
     def launch_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
         self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
+
+    def position_ball_launch(self) -> None:
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
     def generate_rect(self) -> None:
@@ -150,10 +152,13 @@ class ChargedLauncher(Launcher):
         self.ball.sprite.rect.bottom = self.pos_y
 
     def launch_ball(self) -> None:
-        self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
-        self.ball.sprite.direction[1] = - self.force * math.cos(math.radians(self.angle))
+        super().launch_ball()
+        self.position_ball_launch()
+
+    def position_ball_launch(self) -> None:
         self.ball.sprite.rect.bottom = self.rect.top - 1
         self.ball.sprite.rect.centerx = self.pos_x
+        
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
@@ -161,6 +166,10 @@ class DebugLauncher(Launcher):
         super().__init__(ball, pos_x, pos_y, force, angle)
         self.image = pygame.image.load(Settings.imagepath("debuglauncher.png")).convert_alpha()
         self.generate_rect()
+
+    def launch_ball(self) -> None:
+        super().launch_ball()
+        self.position_ball_launch()
     
     def rotate_left(self) -> None:
         self.angle += 22.5
