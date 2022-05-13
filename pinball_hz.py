@@ -146,8 +146,7 @@ class ChargedLauncher(Launcher):
         self.charge = False
 
     def place_ball(self) -> None:
-        self.ball.sprite.direction[0] = 0
-        self.ball.sprite.direction[1] = 0
+        self.ball.sprite.direction[1] = -20
         self.ball.sprite.rect.centerx = self.pos_x
         self.ball.sprite.rect.bottom = self.pos_y
 
