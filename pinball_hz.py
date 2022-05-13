@@ -110,6 +110,12 @@ class WallDTB(Wall):
     def reflect(self, ball):
         super(WallDTB, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
+        for i in range(1, 20):
+            ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
+            ball.sprite.rect.centery += ball.sprite.direction[1] / 100
+            if not pygame.sprite.collide_mask(self, ball.sprite):
+                print(i)
+                break
 
 #Diagonal Wall bottom to top
 class WallDBT(Wall):
@@ -120,7 +126,12 @@ class WallDBT(Wall):
     def reflect(self, ball):
         super(WallDBT, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
-
+        for i in range(1, 20):
+            ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
+            ball.sprite.rect.centery += ball.sprite.direction[1] / 100
+            if not pygame.sprite.collide_mask(self, ball.sprite):
+                print(i)
+                break
 #Returns if a certain time has passed
 class Timer(object):
     def __init__(self, duration, with_start = True):
@@ -264,6 +275,7 @@ class Game(object):
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin - 40, self.wall_margin + 40, Settings.window["height"] - self.wall_margin * 2 - 40))   
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
+        self.walls.add(WallDTB(0, 0, Settings.window["height"] - self.wall_margin * 2))  
         self.walls.add(WallDBT(0, 0, Settings.window["height"] - self.wall_margin * 2))                  
         self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
         self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
