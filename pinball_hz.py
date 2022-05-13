@@ -218,7 +218,7 @@ class Game(object):
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 1000))
-        self.chargedlauncher.sprite.place_ball()
+        self.chargedlauncher.sprite.hold_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
         self.running = False
 
