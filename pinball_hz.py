@@ -72,17 +72,24 @@ class Wall(pygame.sprite.Sprite, ABC):
     def reflect(self, ball):
         pass
 
+    @abstractmethod
+    def ball_out_wall(self, ball):
+        pass
+
 class WallV(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(0)
 
     def reflect(self, ball):
+        self.ball_out_wall(ball)
+        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
+
+    def ball_out_wall(self, ball):
         if ball.sprite.direction[0] < 0:
             ball.sprite.rect.left = self.rect.right + 1
         else:
             ball.sprite.rect.right = self.rect.left - 1
-        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
 
 class WallH(Wall):
@@ -91,13 +98,16 @@ class WallH(Wall):
         self.rect_from_image(90)
 
     def reflect(self, ball):
+        self.ball_out_wall(ball)
+        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
+
+    def ball_out_wall(self, ball):
         if ball.sprite.direction[1] < 0:
             ball.sprite.rect.top = self.rect.bottom + 1
         else:
             ball.sprite.rect.bottom = self.rect.top - 1
-        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
-
+           
 #Diagonal Wall top to bottom
 class WallDTB(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:    
@@ -106,6 +116,9 @@ class WallDTB(Wall):
 
     def reflect(self, ball):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
+        self.ball_out_wall(ball)
+
+    def ball_out_wall(self, ball):
         for i in range(1, 20):
             ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
             ball.sprite.rect.centery += ball.sprite.direction[1] / 100
@@ -120,6 +133,9 @@ class WallDBT(Wall):
 
     def reflect(self, ball):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
+        self.ball_out_wall(ball)
+
+    def ball_out_wall(self, ball):
         for i in range(1, 20):
             ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
             ball.sprite.rect.centery += ball.sprite.direction[1] / 100
