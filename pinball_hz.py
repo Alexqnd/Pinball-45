@@ -145,8 +145,11 @@ class ChargedLauncher(Launcher):
         self.generate_rect()
         self.charge = False
 
+    def place_ball(self) -> None:
+        self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 100)
+
     def hold_ball(self) -> None:
-        self.ball.sprite.direction[1] = -20
+        self.ball.sprite.direction[1] = 0
         self.ball.sprite.rect.centerx = self.pos_x
         self.ball.sprite.rect.bottom = self.pos_y
 
@@ -218,7 +221,7 @@ class Game(object):
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wallcreation()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, 600, 300, 1000))
-        self.chargedlauncher.sprite.hold_ball()
+        self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
         self.running = False
 
