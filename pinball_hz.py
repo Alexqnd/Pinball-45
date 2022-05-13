@@ -1,4 +1,3 @@
-from enum import auto
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_SPACE)
 import os
