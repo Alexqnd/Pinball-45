@@ -107,40 +107,47 @@ class WallH(Wall):
         else:
             ball.sprite.rect.bottom = self.rect.top - 1
 
-           
+
+class WallD(Wall, ABC):
+    def __init__(self, pos_x, pos_y, size) -> None:    
+        super().__init__(pos_x, pos_y, size)
+
+    def ball_out_wall(self, ball):
+        for i in range(1, 20):
+            ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
+            ball.sprite.rect.centery += ball.sprite.direction[1] / 100
+            if not pygame.sprite.collide_mask(self, ball.sprite):
+                break
+
+
 #Diagonal Wall top to bottom
-class WallDTB(Wall):
+class WallDTB(WallD):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(45)
+
+    def ball_out_wall(self, ball):
+        super().ball_out_wall(ball)
 
     def reflect(self, ball):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
         self.ball_out_wall(ball)
 
-    def ball_out_wall(self, ball):
-        for i in range(1, 20):
-            ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
-            ball.sprite.rect.centery += ball.sprite.direction[1] / 100
-            if not pygame.sprite.collide_mask(self, ball.sprite):
-                break
 
 #Diagonal Wall bottom to top
-class WallDBT(Wall):
+class WallDBT(WallD):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(315)
+
+    def ball_out_wall(self, ball):
+        super().ball_out_wall(ball)
 
     def reflect(self, ball):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         self.ball_out_wall(ball)
 
-    def ball_out_wall(self, ball):
-        for i in range(1, 20):
-            ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
-            ball.sprite.rect.centery += ball.sprite.direction[1] / 100
-            if not pygame.sprite.collide_mask(self, ball.sprite):
-                break
+
 #Returns if a certain time has passed
 class Timer(object):
     def __init__(self, duration, with_start = True):
