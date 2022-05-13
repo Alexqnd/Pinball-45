@@ -92,6 +92,35 @@ class WallH(Wall):
             ball.sprite.rect.bottom = self.rect.top - 1
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
+
+#Diagonal Wall top to bottom
+class WallDTB(Wall):
+    def __init__(self, pos_x, pos_y, size) -> None:    
+        super().__init__(pos_x, pos_y, size)
+        self.angle = 45
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.pos_x, self.pos_y)
+
+    def reflect(self, ball):
+        super(WallDTB, self).reflect(ball)
+        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
+
+#Diagonal Wall bottom to top
+class WallDBT(Wall):
+    def __init__(self, pos_x, pos_y, size) -> None:    
+        super().__init__(pos_x, pos_y, size)
+        self.angle = 315
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.pos_x, self.pos_y)
+
+    def reflect(self, ball):
+        super(WallDBT, self).reflect(ball)
+        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
+
 #Returns if a certain time has passed
 class Timer(object):
     def __init__(self, duration, with_start = True):
@@ -233,7 +262,9 @@ class Game(object):
         self.walls = pygame.sprite.Group()
         self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
-        self.walls.add(WallV(Settings.window["width"] - self.wall_margin - 40, self.wall_margin + 40, Settings.window["height"] - self.wall_margin * 2 - 40))        
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin - 40, self.wall_margin + 40, Settings.window["height"] - self.wall_margin * 2 - 40))   
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))   
+        self.walls.add(WallDBT(0, 0, Settings.window["height"] - self.wall_margin * 2))                  
         self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
         self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
         self.walls.add(WallH(self.wall_margin + (Settings.window["width"] - self.wall_margin * 2) / 2 + 25, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
