@@ -53,6 +53,7 @@ class Wall(pygame.sprite.Sprite, ABC):
         self.width = 5
         self.pos_x = x
         self.pos_y = y
+        self.preserved_energy = 0.9
 
     def rect_from_image(self, angle) -> None:
         self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
@@ -69,6 +70,8 @@ class Wall(pygame.sprite.Sprite, ABC):
 
     @abstractmethod
     def reflect(self, ball):
+        ball.sprite.direction[0] = ball.sprite.direction[0] * self.preserved_energy
+        ball.sprite.direction[1] = ball.sprite.direction[1] * self.preserved_energy
         pass
 
     @abstractmethod
@@ -81,6 +84,7 @@ class WallV(Wall):
         self.rect_from_image(0)
 
     def reflect(self, ball):
+        super(WallV, self).reflect(ball)
         self.ball_out_wall(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
@@ -97,6 +101,7 @@ class WallH(Wall):
         self.rect_from_image(90)
 
     def reflect(self, ball):
+        super(WallH, self).reflect(ball)
         self.ball_out_wall(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
@@ -129,6 +134,7 @@ class WallDTB(WallD):
         super().ball_out_wall(ball)
 
     def reflect(self, ball):
+        super(WallDTB, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
         self.ball_out_wall(ball)
 
@@ -143,6 +149,7 @@ class WallDBT(WallD):
         super().ball_out_wall(ball)
 
     def reflect(self, ball):
+        super(WallDTB, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         self.ball_out_wall(ball)
 
