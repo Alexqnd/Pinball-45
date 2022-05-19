@@ -295,21 +295,22 @@ class Game(object):
         self.place_objects()
 
     def place_objects(self) -> None:
-        self.wall_margin = 100
+        self.wall_margin_tb = 100
+        self.wall_margin_lr = 150
         self.wallcreation()
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, Settings.window["width"] - self.wall_margin - 18, Settings.window["height"] - self.wall_margin - 40, 2000))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, Settings.window["width"] - self.wall_margin_lr - 18, Settings.window["height"] - self.wall_margin_tb - 40, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
 
     def wallcreation(self) -> None:
         self.walls = pygame.sprite.Group()
-        self.walls.add(WallV(self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))
-        self.walls.add(WallV(Settings.window["width"] - self.wall_margin, self.wall_margin, Settings.window["height"] - self.wall_margin * 2))   
-        self.walls.add(WallV(Settings.window["width"] - self.wall_margin - 40, self.wall_margin + 40, Settings.window["height"] - self.wall_margin * 2 - 40))
-        self.walls.add(WallDTB(Settings.window["width"] - self.wall_margin - 25, self.wall_margin, 38))                 
-        self.walls.add(WallH(self.wall_margin, self.wall_margin, Settings.window["width"] - self.wall_margin * 2))
-        self.walls.add(WallH(self.wall_margin, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
-        self.walls.add(WallH(self.wall_margin + (Settings.window["width"] - self.wall_margin * 2) / 2 + 25, Settings.window["height"] - self.wall_margin, (Settings.window["width"] - self.wall_margin * 2) / 2 - 25))
+        self.walls.add(WallV(self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))   
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr - 40, self.wall_margin_tb + 40, Settings.window["height"] - self.wall_margin_tb * 2 - 40))
+        self.walls.add(WallDTB(Settings.window["width"] - self.wall_margin_lr - 25, self.wall_margin_tb, 38))                 
+        self.walls.add(WallH(self.wall_margin_lr, self.wall_margin_tb, Settings.window["width"] - self.wall_margin_lr * 2))
+        self.walls.add(WallDTB(self.wall_margin_lr, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
+        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 53, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
 
     def run(self) -> None:
         self.running = True
