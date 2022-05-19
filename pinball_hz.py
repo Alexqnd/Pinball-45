@@ -271,6 +271,15 @@ class DebugLauncher(Launcher):
         self.pos_x -= 20
         self.rect.center = (self.pos_x, self.pos_y)
 
+class Background(object):
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = pygame.image.load(os.path.join(Settings.imagepath("table.png")))
+        self.image = pygame.transform.scale(self.image, (Settings.dim())).convert()
+    
+    def draw(self, screen):
+        screen.blit(self.image, (0, 0))
+
 #main class    
 class Game(object):
     def __init__(self) -> None:
@@ -281,6 +290,7 @@ class Game(object):
         pygame.display.set_caption(Settings.title)
         self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
+        self.background = Background()
         self.running = False
         self.place_objects()
 
@@ -352,7 +362,7 @@ class Game(object):
         self.ball.update()
     
     def draw(self) -> None:
-        self.screen.fill((30, 30, 70))
+        self.background.draw(self.screen)
         self.debuglauncher.draw(self.screen)
         self.ball.draw(self.screen)
         self.chargedlauncher.draw(self.screen)
