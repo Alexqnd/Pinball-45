@@ -149,7 +149,7 @@ class WallDBT(WallD):
         super().ball_out_wall(ball)
 
     def reflect(self, ball):
-        super(WallDTB, self).reflect(ball)
+        super(WallDBT, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         self.ball_out_wall(ball)
 
