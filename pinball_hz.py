@@ -280,21 +280,9 @@ class Background(object):
     def draw(self, screen):
         screen.blit(self.image, (0, 0))
 
-#main class    
-class Game(object):
+class Table(object):
     def __init__(self) -> None:
-        super().__init__()
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "10, 50"
-        pygame.init()
-        self.screen = pygame.display.set_mode(Settings.dim())
-        pygame.display.set_caption(Settings.title)
-        self.clock = pygame.time.Clock()
         self.ball = pygame.sprite.GroupSingle(Ball())
-        self.background = Background()
-        self.running = False
-        self.place_objects()
-
-    def place_objects(self) -> None:
         self.wall_margin_tb = 100
         self.wall_margin_lr = 150
         self.wallcreation()
@@ -312,13 +300,68 @@ class Game(object):
         self.walls.add(WallDTB(self.wall_margin_lr, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
         self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 53, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
 
+    def collision(self) -> None:
+        collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
+        if pygame.sprite.groupcollide(self.chargedlauncher, self.ball, False, False, pygame.sprite.collide_mask):
+            self.chargedlauncher.sprite.hold_ball()
+        for wall in collide:
+            wall.reflect(self.ball)
+
+    def watch_for_events(self, event):
+        if event.key == K_SPACE:
+            self.chargedlauncher.sprite.launch_ball()
+            
+        #Controls the DebugLauncher
+        elif event.key == K_LEFT:
+            self.debuglauncher.sprite.rotate_left()
+        elif event.key == K_RIGHT:
+            self.debuglauncher.sprite.rotate_right()
+        elif event.key == K_UP:
+            self.debuglauncher.sprite.increase_force()
+        elif event.key == K_DOWN:
+            self.debuglauncher.sprite.decrease_force()
+        elif event.key == K_w:
+            self.debuglauncher.sprite.move_up()
+        elif event.key == K_d:
+            self.debuglauncher.sprite.move_right()
+        elif event.key == K_s:
+            self.debuglauncher.sprite.move_down()
+        elif event.key == K_a:
+            self.debuglauncher.sprite.move_left()
+        elif event.key == K_r:
+            self.debuglauncher.sprite.launch_ball()
+
+    def update(self) -> None:
+        self.ball.update()
+        self.collision()
+
+    def draw(self, screen) -> None:
+        self.debuglauncher.draw(screen)
+        self.ball.draw(screen)
+        self.chargedlauncher.draw(screen)
+        self.walls.draw(screen)
+
+
+
+#main class    
+class Game(object):
+    def __init__(self) -> None:
+        super().__init__()
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "10, 50"
+        pygame.init()
+        self.screen = pygame.display.set_mode(Settings.dim())
+        pygame.display.set_caption(Settings.title)
+        self.clock = pygame.time.Clock()
+        self.background = Background()
+        self.table = Table()
+        self.running = False
+
     def run(self) -> None:
         self.running = True
         while self.running:
             Settings.deltatime = self.clock.tick(Settings.fps) / 1000
             self.watch_for_events()
             self.update()
-            self.collision()
             self.draw()
         pygame.quit()
 
@@ -329,45 +372,15 @@ class Game(object):
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
-                elif event.key == K_SPACE:
-                    self.chargedlauncher.sprite.launch_ball()
-                    
-                #Controls the DebugLauncher
-                elif event.key == K_LEFT:
-                    self.debuglauncher.sprite.rotate_left()
-                elif event.key == K_RIGHT:
-                    self.debuglauncher.sprite.rotate_right()
-                elif event.key == K_UP:
-                    self.debuglauncher.sprite.increase_force()
-                elif event.key == K_DOWN:
-                    self.debuglauncher.sprite.decrease_force()
-                elif event.key == K_w:
-                    self.debuglauncher.sprite.move_up()
-                elif event.key == K_d:
-                    self.debuglauncher.sprite.move_right()
-                elif event.key == K_s:
-                    self.debuglauncher.sprite.move_down()
-                elif event.key == K_a:
-                    self.debuglauncher.sprite.move_left()
-                elif event.key == K_r:
-                    self.debuglauncher.sprite.launch_ball()
-
-    def collision(self) -> None:
-        collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
-        if pygame.sprite.groupcollide(self.chargedlauncher, self.ball, False, False, pygame.sprite.collide_mask):
-            self.chargedlauncher.sprite.hold_ball()
-        for wall in collide:
-            wall.reflect(self.ball)
+                else:
+                    self.table.watch_for_events(event)
 
     def update(self) -> None:
-        self.ball.update()
+        self.table.update()
     
     def draw(self) -> None:
         self.background.draw(self.screen)
-        self.debuglauncher.draw(self.screen)
-        self.ball.draw(self.screen)
-        self.chargedlauncher.draw(self.screen)
-        self.walls.draw(self.screen)
+        self.table.draw(self.screen)
         pygame.display.flip()
 
 if __name__ == '__main__':
