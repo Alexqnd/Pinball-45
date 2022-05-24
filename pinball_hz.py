@@ -285,20 +285,23 @@ class Table(object):
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.wall_margin_tb = 100
         self.wall_margin_lr = 150
-        self.wallcreation()
+        self.walls = pygame.sprite.Group()
+        self.launchlane()
+        self.borders()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, Settings.window["width"] - self.wall_margin_lr - 18, Settings.window["height"] - self.wall_margin_tb - 40, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
 
-    def wallcreation(self) -> None:
-        self.walls = pygame.sprite.Group()
-        self.walls.add(WallV(self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))
-        self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))   
+    def launchlane(self) -> None:
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr - 40, self.wall_margin_tb + 40, Settings.window["height"] - self.wall_margin_tb * 2 - 40))
         self.walls.add(WallDTB(Settings.window["width"] - self.wall_margin_lr - 25, self.wall_margin_tb, 38))                 
+
+    def borders(self) -> None:
         self.walls.add(WallH(self.wall_margin_lr, self.wall_margin_tb, Settings.window["width"] - self.wall_margin_lr * 2))
+        self.walls.add(WallV(self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))
+        self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2)) 
         self.walls.add(WallDTB(self.wall_margin_lr, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
-        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 53, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
+        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 53, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))  
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
