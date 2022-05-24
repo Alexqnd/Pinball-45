@@ -78,6 +78,7 @@ class Wall(pygame.sprite.Sprite, ABC):
     def ball_out_wall(self, ball):
         pass
 
+
 class WallV(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
@@ -200,6 +201,7 @@ class Launcher(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
+
 class ChargedLauncher(Launcher):
     def __init__(self, ball, pos_x, pos_y, force) -> None:
         super().__init__(ball, pos_x, pos_y, force)
@@ -271,6 +273,7 @@ class DebugLauncher(Launcher):
         self.pos_x -= 20
         self.rect.center = (self.pos_x, self.pos_y)
 
+
 class Background(object):
     def __init__(self) -> None:
         super().__init__()
@@ -279,6 +282,7 @@ class Background(object):
     
     def draw(self, screen):
         screen.blit(self.image, (0, 0))
+
 
 class Table(object):
     def __init__(self) -> None:
@@ -345,7 +349,6 @@ class Table(object):
         self.walls.draw(screen)
 
 
-
 #main class    
 class Game(object):
     def __init__(self) -> None:
@@ -385,6 +388,7 @@ class Game(object):
         self.background.draw(self.screen)
         self.table.draw(self.screen)
         pygame.display.flip()
+
 
 if __name__ == '__main__':
     game = Game()
