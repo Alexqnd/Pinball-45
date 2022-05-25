@@ -299,14 +299,19 @@ class Table(object):
         self.wall_margin_lr = 150
         self.walls = pygame.sprite.Group()
         self.launchlane()
+        self.exitlanes()
         self.borders()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, Settings.window["width"] - self.wall_margin_lr - 18, Settings.window["height"] - self.wall_margin_tb - 40, 2000))
         self.chargedlauncher.sprite.place_ball()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0)) 
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))     
 
     def launchlane(self) -> None:
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr - 40, self.wall_margin_tb + 40, Settings.window["height"] - self.wall_margin_tb * 2 - 40))
-        self.walls.add(WallDTB(Settings.window["width"] - self.wall_margin_lr - 25, self.wall_margin_tb, 38))                 
+        self.walls.add(WallDTB(Settings.window["width"] - self.wall_margin_lr - 25, self.wall_margin_tb, 38))
+
+    def exitlanes(self) -> None:
+        self.walls.add(WallDTB(self.wall_margin_lr + 40, Settings.window["height"] - 198, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 100))
+        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) - 76, Settings.window["height"] - 197, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 100))
 
     def borders(self) -> None:
         self.walls.add(WallH(self.wall_margin_lr, self.wall_margin_tb, Settings.window["width"] - self.wall_margin_lr * 2))
