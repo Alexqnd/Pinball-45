@@ -304,8 +304,8 @@ class Table(object):
         self.walls.add(WallH(self.wall_margin_lr, self.wall_margin_tb, Settings.window["width"] - self.wall_margin_lr * 2))
         self.walls.add(WallV(self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2)) 
-        self.walls.add(WallDTB(self.wall_margin_lr, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))
-        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 53, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2 - 25))  
+        self.walls.add(WallDTB(self.wall_margin_lr, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2))
+        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 34, Settings.window["height"] - 177, (Settings.window["width"] - self.wall_margin_lr * 2) / 2))  
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
