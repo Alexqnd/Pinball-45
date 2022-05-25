@@ -154,6 +154,14 @@ class WallDBT(WallD):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         self.ball_out_wall(ball)
 
+    def generate_rect(self) -> None:
+        self.rect = self.image.get_rect()
+        self.rect.topright = (self.pos_x, self.pos_y)
+
+    def transform_image(self, angle) -> None:
+        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image_template, angle)
+
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -305,7 +313,7 @@ class Table(object):
         self.walls.add(WallV(self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2))
         self.walls.add(WallV(Settings.window["width"] - self.wall_margin_lr, self.wall_margin_tb, Settings.window["height"] - self.wall_margin_tb * 2)) 
         self.walls.add(WallDTB(self.wall_margin_lr, Settings.window["height"] - 179, (Settings.window["width"] - self.wall_margin_lr * 2) / 2))
-        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) / 2 + 34, Settings.window["height"] - 177, (Settings.window["width"] - self.wall_margin_lr * 2) / 2))  
+        self.walls.add(WallDBT(self.wall_margin_lr + (Settings.window["width"] - self.wall_margin_lr * 2) - 36, Settings.window["height"] - 177, (Settings.window["width"] - self.wall_margin_lr * 2) / 2))  
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
