@@ -113,20 +113,8 @@ class WallH(Wall):
             ball.sprite.rect.bottom = self.rect.top - 1
 
 
-class WallD(Wall, ABC):
-    def __init__(self, pos_x, pos_y, size) -> None:    
-        super().__init__(pos_x, pos_y, size)
-
-    def ball_out_wall(self, ball):
-        for i in range(1, 20):
-            ball.sprite.rect.centerx += ball.sprite.direction[0] / 100
-            ball.sprite.rect.centery += ball.sprite.direction[1] / 100
-            if not pygame.sprite.collide_mask(self, ball.sprite):
-                break
-
-
 #Diagonal Wall top to bottom
-class WallDTB(WallD):
+class WallDTB(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(45)
@@ -139,9 +127,13 @@ class WallDTB(WallD):
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
         self.ball_out_wall(ball)
 
+    def ball_out_wall(self, ball):
+        y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
+        ball.sprite.rect.centery += y
+
 
 #Diagonal Wall bottom to top
-class WallDBT(WallD):
+class WallDBT(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(315)
@@ -153,6 +145,10 @@ class WallDBT(WallD):
         super(WallDBT, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         self.ball_out_wall(ball)
+
+    def ball_out_wall(self, ball):
+        y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
+        ball.sprite.rect.centery += y
 
     def generate_rect(self) -> None:
         self.rect = self.image.get_rect()
