@@ -290,7 +290,6 @@ class Background(object):
 
 class Table(object):
     def __init__(self) -> None:
-        self.ball = pygame.sprite.GroupSingle(Ball())
         self.width = 500
         self.height = 700
         self.margin_t = 100
@@ -299,14 +298,18 @@ class Table(object):
         self.r_guide = self.width + self.margin_lr
         self.b_guide = self.height + self.margin_t
         self.l_guide = self.margin_lr
+        self.objects()
+
+    def objects(self) -> None:
         self.walls = pygame.sprite.Group()
         self.launchlane()
         self.exitlanes()
         self.borders()
+        self.ball = pygame.sprite.GroupSingle(Ball())
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 18, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))     
-
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
+        
     def launchlane(self) -> None:
         self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, self.height - 140))
         self.walls.add(WallDTB(self.r_guide - 25, self.t_guide, 38))
