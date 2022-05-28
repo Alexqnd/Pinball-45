@@ -1,5 +1,5 @@
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_SPACE)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_t, K_g, K_SPACE)
 import os
 import math
 from abc import ABC, abstractmethod
@@ -237,48 +237,58 @@ class DebugLauncher(Launcher):
     def __init__(self, ball, pos_x, pos_y, force, angle) -> None:
         super().__init__(ball, pos_x, pos_y, force, angle)
         self.image = pygame.image.load(Settings.imagepath("debuglauncher.png")).convert_alpha()
+        self.grit = 1
         self.generate_rect()
+
+    #increase grit for finetunin the DebugLauncher
+    def increase_grit(self) -> None:
+        self.grit += 1
+        print(self.grit, "grit")
+
+    def decrease_grit(self) -> None:
+        if self.grit > 1:
+            self.grit -= 1
+        print(self.grit, "grit")
 
     def launch_ball(self) -> None:
         super().launch_ball()
         self.position_ball_launch()
     
     def rotate_left(self) -> None:
-        self.angle += 22.5
+        self.angle += 22.5 / self.grit
         if self.angle >= 360:
             self.angle -= 360
         self.image = pygame.transform.rotate(self.image_template, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
     
     def rotate_right(self) -> None:
-        self.angle -= 22.5
+        self.angle -= 22.5 / self.grit
         if self.angle < 0:
             self.angle += 360
         self.image = pygame.transform.rotate(self.image_template, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def increase_force(self) -> None:
-        self.force += 50
+        self.force += 50 / self.grit
     
     def decrease_force(self) -> None:
-        self.force -= 50
+        self.force -= 50 / self.grit
 
     def move_up(self) -> None:
-        self.pos_y -= 20
+        self.pos_y -= 20 / self.grit
         self.rect.center = (self.pos_x, self.pos_y)
 
     def move_right(self) -> None:
-        self.pos_x += 20
+        self.pos_x += 20 / self.grit
         self.rect.center = (self.pos_x, self.pos_y)
 
     def move_down(self) -> None:
-        self.pos_y += 20
+        self.pos_y += 20 / self.grit
         self.rect.center = (self.pos_x, self.pos_y)
 
     def move_left(self) -> None:
-        self.pos_x -= 20
+        self.pos_x -= 20 / self.grit
         self.rect.center = (self.pos_x, self.pos_y)
-
 
 class Background(object):
     def __init__(self) -> None:
@@ -339,6 +349,10 @@ class Table(object):
             self.chargedlauncher.sprite.launch_ball()
             
         #Controls the DebugLauncher
+        elif event.key == K_t:
+            self.debuglauncher.sprite.increase_grit()
+        elif event.key == K_g:
+            self.debuglauncher.sprite.decrease_grit()           
         elif event.key == K_LEFT:
             self.debuglauncher.sprite.rotate_left()
         elif event.key == K_RIGHT:
