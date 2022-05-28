@@ -69,44 +69,45 @@ class Wall(pygame.sprite.Sprite, ABC):
         self.rect.topleft = (self.pos_x, self.pos_y)
 
     @abstractmethod
-    def reflect(self, ball):
+    def reflect(self, ball) -> None:
         ball.sprite.direction[0] = ball.sprite.direction[0] * self.preserved_energy
         ball.sprite.direction[1] = ball.sprite.direction[1] * self.preserved_energy
-        pass
 
     @abstractmethod
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         pass
 
 
+#Vertical Wall
 class WallV(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(0)
 
-    def reflect(self, ball):
+    def reflect(self, ball) -> None:
         super(WallV, self).reflect(ball)
         self.ball_out_wall(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         if ball.sprite.direction[0] < 0:
             ball.sprite.rect.left = self.rect.right + 1
         else:
             ball.sprite.rect.right = self.rect.left - 1
 
 
+#Horizontal Wall
 class WallH(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(90)
 
-    def reflect(self, ball):
+    def reflect(self, ball) -> None:
         super(WallH, self).reflect(ball)
         self.ball_out_wall(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         if ball.sprite.direction[1] < 0:
             ball.sprite.rect.top = self.rect.bottom + 1
         else:
@@ -119,15 +120,15 @@ class WallDTB(Wall):
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(45)
 
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         super().ball_out_wall(ball)
 
-    def reflect(self, ball):
+    def reflect(self, ball) -> None:
         super(WallDTB, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
         self.ball_out_wall(ball)
 
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centery += y
 
@@ -138,15 +139,15 @@ class WallDBT(Wall):
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(315)
 
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         super().ball_out_wall(ball)
 
-    def reflect(self, ball):
+    def reflect(self, ball) -> None:
         super(WallDBT, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
         self.ball_out_wall(ball)
 
-    def ball_out_wall(self, ball):
+    def ball_out_wall(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centery += y
 
@@ -161,20 +162,20 @@ class WallDBT(Wall):
 
 #Returns if a certain time has passed
 class Timer(object):
-    def __init__(self, duration, with_start = True):
+    def __init__(self, duration, with_start = True) -> None:
         self.duration = duration
         if with_start:
             self.next = pygame.time.get_ticks()
         else:
             self.next = pygame.time.get_ticks() + self.duration
 
-    def is_next_stop_reached(self) -> None:
+    def is_next_stop_reached(self):
         if pygame.time.get_ticks() > self.next:
             self.next = pygame.time.get_ticks() + self.duration
             return True
         return False
 
-    def change_duration(self, delta=10):
+    def change_duration(self, delta=10) -> None:
         self.duration += delta
         if self.duration < 0:
             self.duration = 0
@@ -206,6 +207,7 @@ class Launcher(pygame.sprite.Sprite):
         self.rect.center = (self.pos_x, self.pos_y)
 
 
+#Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
     def __init__(self, ball, pos_x, pos_y, force) -> None:
         super().__init__(ball, pos_x, pos_y, force)
@@ -284,7 +286,7 @@ class Background(object):
         self.image = pygame.image.load(os.path.join(Settings.imagepath("table.png")))
         self.image = pygame.transform.scale(self.image, (Settings.dim())).convert()
     
-    def draw(self, screen):
+    def draw(self, screen) -> None:
         screen.blit(self.image, (0, 0))
 
 
@@ -332,7 +334,7 @@ class Table(object):
         for wall in collide:
             wall.reflect(self.ball)
 
-    def watch_for_events(self, event):
+    def watch_for_events(self, event) -> None:
         if event.key == K_SPACE:
             self.chargedlauncher.sprite.launch_ball()
             
