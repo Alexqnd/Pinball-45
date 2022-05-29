@@ -120,9 +120,6 @@ class WallDTB(Wall):
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(45)
 
-    def ball_out_wall(self, ball) -> None:
-        super().ball_out_wall(ball)
-
     def reflect(self, ball) -> None:
         super(WallDTB, self).reflect(ball)
         ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
@@ -138,9 +135,6 @@ class WallDBT(Wall):
     def __init__(self, pos_x, pos_y, size) -> None:    
         super().__init__(pos_x, pos_y, size)
         self.rect_from_image(315)
-
-    def ball_out_wall(self, ball) -> None:
-        super().ball_out_wall(ball)
 
     def reflect(self, ball) -> None:
         super(WallDBT, self).reflect(ball)
