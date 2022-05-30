@@ -153,6 +153,15 @@ class WallDBT(Wall):
         self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.image = pygame.transform.rotate(self.image_template, angle)
 
+class RailDBT(WallDBT):
+    def __init__(self, x, y, size) -> None:
+        super().__init__(x, y, size)
+        self.width = 1
+        self.rect_from_image(315)
+
+    def connect_ball(self, ball):
+        y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
+        ball.sprite.rect.centerx -= y
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -307,11 +316,12 @@ class Table(object):
         self.objects()
 
     def objects(self) -> None:
+        self.ball = pygame.sprite.GroupSingle(Ball())
         self.walls = pygame.sprite.Group()
+        self.rails = pygame.sprite.Group()
         self.launchlane()
         self.exitlanes()
         self.borders()
-        self.ball = pygame.sprite.GroupSingle(Ball())
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 18, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
@@ -329,7 +339,8 @@ class Table(object):
         self.walls.add(WallV(self.l_guide, self.t_guide, self.height))
         self.walls.add(WallV(self.r_guide, self.t_guide, self.height))
         self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, self.width / 2))
-        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, self.width / 2))
+        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 100))
+        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -337,6 +348,9 @@ class Table(object):
             self.chargedlauncher.sprite.hold_ball()
         for wall in collide:
             wall.reflect(self.ball)
+        collide = pygame.sprite.groupcollide(self.rails, self.ball, False, False, pygame.sprite.collide_mask)
+        for rail in collide:
+            rail.connect_ball(self.ball)
 
     def watch_for_events(self, event) -> None:
         if event.key == K_SPACE:
@@ -375,6 +389,7 @@ class Table(object):
         self.ball.draw(screen)
         self.chargedlauncher.draw(screen)
         self.walls.draw(screen)
+        self.rails.draw(screen)
 
 
 #main class    
