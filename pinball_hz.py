@@ -160,7 +160,7 @@ class RailDTB(WallDTB):
         self.width = 1
         self.rect_from_image(45)
     
-    def connect_ball(self, ball):
+    def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centerx += y
 
@@ -170,7 +170,7 @@ class RailDBT(WallDBT):
         self.width = 1
         self.rect_from_image(315)
 
-    def connect_ball(self, ball):
+    def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centerx -= y
 
