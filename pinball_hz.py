@@ -153,6 +153,17 @@ class WallDBT(Wall):
         self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
         self.image = pygame.transform.rotate(self.image_template, angle)
 
+
+class RailDTB(WallDTB):
+    def __init__(self, x, y, size) -> None:
+        super().__init__(x, y, size)
+        self.width = 1
+        self.rect_from_image(45)
+    
+    def connect_ball(self, ball):
+        y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
+        ball.sprite.rect.centerx += y
+
 class RailDBT(WallDBT):
     def __init__(self, x, y, size) -> None:
         super().__init__(x, y, size)
@@ -338,8 +349,9 @@ class Table(object):
         self.walls.add(WallH(self.l_guide, self.t_guide, self.width))
         self.walls.add(WallV(self.l_guide, self.t_guide, self.height))
         self.walls.add(WallV(self.r_guide, self.t_guide, self.height))
-        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, self.width / 2))
+        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 100))
         self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 100))
+        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, self.width / 2))
         self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
 
     def collision(self) -> None:
