@@ -333,13 +333,13 @@ class Table(object):
         self.launchlane()
         self.exitlanes()
         self.borders()
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 18, self.b_guide - 140, 2000))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
         
     def launchlane(self) -> None:
         self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, self.height - 140))
-        self.walls.add(WallDTB(self.r_guide - 25, self.t_guide, 38))
+        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 20))
 
     def exitlanes(self) -> None:
         self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, self.width / 3))
