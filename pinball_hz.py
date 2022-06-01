@@ -230,6 +230,7 @@ class ChargedLauncher(Launcher):
         self.charging = False
         self.charge_speed = 1000
         self.force = 0
+        self.holding = False
 
     def update(self) -> None:
         if self.charging and self.force <= 3000:
@@ -247,8 +248,9 @@ class ChargedLauncher(Launcher):
         self.charging = True
 
     def launch_ball(self) -> None:
-        super().launch_ball()
-        self.position_ball_launch()
+        if self.holding:
+            super().launch_ball()
+            self.position_ball_launch()
         self.charging = False
         self.force = 0
 
@@ -369,6 +371,9 @@ class Table(object):
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
         if pygame.sprite.groupcollide(self.chargedlauncher, self.ball, False, False, pygame.sprite.collide_mask):
             self.chargedlauncher.sprite.hold_ball()
+            self.chargedlauncher.sprite.holding = True
+        else:
+            self.chargedlauncher.sprite.holding = False
         for wall in collide:
             wall.reflect(self.ball)
         collide = pygame.sprite.groupcollide(self.rails, self.ball, False, False, pygame.sprite.collide_mask)
