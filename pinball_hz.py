@@ -233,7 +233,7 @@ class ChargedLauncher(Launcher):
         self.force = 0
         self.holding = False
         self.ball_number = 0
-        self.display = Display(self.pos_x, self.pos_y - 100, str(self.ball_number))
+        self.display = Display(self.pos_x, self.pos_y - 100, self.ball_number)
 
     def update(self) -> None:
         if self.charging and self.force <= 3000:
@@ -242,11 +242,11 @@ class ChargedLauncher(Launcher):
     def place_ball(self) -> None:
         if self.ball_number < 3:
             self.ball_number += 1 
-            print(self.ball_number)
+            self.display.update(self.ball_number)
             self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 300)
         else:
             Settings.gameover = True
-            print("Game Over")
+            self.display.update("G")
 
     def hold_ball(self) -> None:
         self.ball.sprite.direction[1] = 0
@@ -338,17 +338,24 @@ class Display(pygame.sprite.Sprite):
         self.fontsize = 24
         self.fontfamily = pygame.font.get_default_font()
         self.fontcolor = [255, 255, 255]
+        self.font = pygame.font.Font(self.fontfamily, self.fontsize)
+        self.render_text(text)
         self.pos_x = pos_x
         self.pos_y = pos_y
-        self.text = text
         self.generate_rect()
 
+    def render_text(self, text):
+        if not isinstance(text, str):
+            text = str(text)
+        self.rendered_text = self.font.render(text, True, self.fontcolor)
+
     def generate_rect(self) -> None:
-        font = pygame.font.Font(self.fontfamily, self.fontsize)
-        self.rendered_text = font.render(self.text, True, self.fontcolor)
         self.rect = self.rendered_text.get_rect()
         self.rect.centerx = self.pos_x
         self.rect.centery = self.pos_y
+
+    def update(self, text) -> None:
+        self.render_text(text)
 
     def draw(self, screen) -> None:
         screen.blit(self.rendered_text, self.rect)
