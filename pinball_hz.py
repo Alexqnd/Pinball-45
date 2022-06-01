@@ -233,7 +233,7 @@ class ChargedLauncher(Launcher):
         self.force = 0
         self.holding = False
         self.ball_number = 0
-        self.display = Display()
+        self.display = Display(100, 300, "3")
 
     def update(self) -> None:
         if self.charging and self.force <= 3000:
@@ -333,19 +333,22 @@ class DebugLauncher(Launcher):
 
 #Displaying Text
 class Display(pygame.sprite.Sprite):
-    def __init__(self) -> None:
+    def __init__(self, pos_x, pos_y, text) -> None:
         super().__init__()
         self.fontsize = 24
         self.fontfamily = pygame.font.get_default_font()
         self.fontcolor = [255, 255, 255]
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.text = text
         self.generate_rect()
 
     def generate_rect(self) -> None:
         font = pygame.font.Font(self.fontfamily, self.fontsize)
-        self.rendered_text = font.render("1", True, self.fontcolor)
+        self.rendered_text = font.render(self.text, True, self.fontcolor)
         self.rect = self.rendered_text.get_rect()
-        self.rect.centerx = 100
-        self.rect.centery = 100
+        self.rect.centerx = self.pos_x
+        self.rect.centery = self.pos_y
 
     def draw(self, screen) -> None:
         screen.blit(self.rendered_text, self.rect)
@@ -379,7 +382,6 @@ class Table(object):
         self.launchlane()
         self.exitlanes()
         self.borders()
-        self.display = Display()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
@@ -463,7 +465,6 @@ class Table(object):
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
         self.rails.draw(screen)
-        self.display.draw(screen)
 
 
 #main class    
