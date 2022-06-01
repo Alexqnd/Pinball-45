@@ -380,6 +380,10 @@ class Table(object):
         for rail in collide:
             rail.connect_ball(self.ball)
 
+    def out_of_table(self):
+        if self.ball.sprite.rect.top > self.b_guide:
+            self.chargedlauncher.sprite.place_ball()
+
     def watch_for_events(self, event) -> None:
         if event.type == KEYDOWN:
             if event.key == K_SPACE:
@@ -417,6 +421,7 @@ class Table(object):
         self.ball.update()
         self.chargedlauncher.update()
         self.collision()
+        self.out_of_table()
 
     def draw(self, screen) -> None:
         self.debuglauncher.draw(screen)
