@@ -1,5 +1,5 @@
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_t, K_g, K_SPACE)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_t, K_g, K_SPACE)
 import os
 import math
 from abc import ABC, abstractmethod
@@ -227,7 +227,13 @@ class ChargedLauncher(Launcher):
         super().__init__(ball, pos_x, pos_y, force)
         self.image = pygame.image.load(Settings.imagepath("chargedlauncher.png")).convert_alpha()
         self.generate_rect()
-        self.charge = False
+        self.charging = False
+        self.charge_speed = 1000
+        self.force = 0
+
+    def update(self) -> None:
+        if self.charging and self.force <= 3000:
+            self.force += self.charge_speed * Settings.deltatime
 
     def place_ball(self) -> None:
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 100)
@@ -237,9 +243,14 @@ class ChargedLauncher(Launcher):
         self.ball.sprite.rect.centerx = self.pos_x
         self.ball.sprite.rect.bottom = self.pos_y
 
+    def charge(self) -> None:
+        self.charging = True
+
     def launch_ball(self) -> None:
         super().launch_ball()
         self.position_ball_launch()
+        self.charging = False
+        self.force = 0
 
     def position_ball_launch(self) -> None:
         self.ball.sprite.rect.bottom = self.rect.top - 1
@@ -365,35 +376,41 @@ class Table(object):
             rail.connect_ball(self.ball)
 
     def watch_for_events(self, event) -> None:
-        if event.key == K_SPACE:
-            self.chargedlauncher.sprite.launch_ball()
-            
-        #Controls the DebugLauncher
-        elif event.key == K_t:
-            self.debuglauncher.sprite.increase_grit()
-        elif event.key == K_g:
-            self.debuglauncher.sprite.decrease_grit()           
-        elif event.key == K_LEFT:
-            self.debuglauncher.sprite.rotate_left()
-        elif event.key == K_RIGHT:
-            self.debuglauncher.sprite.rotate_right()
-        elif event.key == K_UP:
-            self.debuglauncher.sprite.increase_force()
-        elif event.key == K_DOWN:
-            self.debuglauncher.sprite.decrease_force()
-        elif event.key == K_w:
-            self.debuglauncher.sprite.move_up()
-        elif event.key == K_d:
-            self.debuglauncher.sprite.move_right()
-        elif event.key == K_s:
-            self.debuglauncher.sprite.move_down()
-        elif event.key == K_a:
-            self.debuglauncher.sprite.move_left()
-        elif event.key == K_r:
-            self.debuglauncher.sprite.launch_ball()
+        if event.type == KEYDOWN:
+            if event.key == K_SPACE:
+                self.chargedlauncher.sprite.charge()
+                
+            #Controls the DebugLauncher
+            elif event.key == K_t:
+                self.debuglauncher.sprite.increase_grit()
+            elif event.key == K_g:
+                self.debuglauncher.sprite.decrease_grit()           
+            elif event.key == K_LEFT:
+                self.debuglauncher.sprite.rotate_left()
+            elif event.key == K_RIGHT:
+                self.debuglauncher.sprite.rotate_right()
+            elif event.key == K_UP:
+                self.debuglauncher.sprite.increase_force()
+            elif event.key == K_DOWN:
+                self.debuglauncher.sprite.decrease_force()
+            elif event.key == K_w:
+                self.debuglauncher.sprite.move_up()
+            elif event.key == K_d:
+                self.debuglauncher.sprite.move_right()
+            elif event.key == K_s:
+                self.debuglauncher.sprite.move_down()
+            elif event.key == K_a:
+                self.debuglauncher.sprite.move_left()
+            elif event.key == K_r:
+                self.debuglauncher.sprite.launch_ball()
+        
+        elif event.type == KEYUP:
+            if event.key == K_SPACE:
+                self.chargedlauncher.sprite.launch_ball()
 
     def update(self) -> None:
         self.ball.update()
+        self.chargedlauncher.update()
         self.collision()
 
     def draw(self, screen) -> None:
@@ -428,13 +445,13 @@ class Game(object):
 
     def watch_for_events(self) -> None:
         for event in pygame.event.get():
+            self.table.watch_for_events(event)
             if event.type == QUIT:
                 self.running = False
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
-                else:
-                    self.table.watch_for_events(event)
+              
 
     def update(self) -> None:
         self.table.update()
