@@ -344,7 +344,7 @@ class Display(pygame.sprite.Sprite):
         self.pos_y = pos_y
         self.generate_rect()
 
-    def render_text(self, text):
+    def render_text(self, text) -> None:
         if not isinstance(text, str):
             text = str(text)
         self.rendered_text = self.font.render(text, True, self.fontcolor)
@@ -359,6 +359,7 @@ class Display(pygame.sprite.Sprite):
 
     def draw(self, screen) -> None:
         screen.blit(self.rendered_text, self.rect)
+
 
 class Background(object):
     def __init__(self) -> None:
