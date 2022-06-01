@@ -236,7 +236,7 @@ class ChargedLauncher(Launcher):
             self.force += self.charge_speed * Settings.deltatime
 
     def place_ball(self) -> None:
-        self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 100)
+        self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 300)
 
     def hold_ball(self) -> None:
         self.ball.sprite.direction[1] = 0
