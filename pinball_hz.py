@@ -13,6 +13,7 @@ class Settings(object):
     path = {}
     path['file'] = os.path.dirname(os.path.abspath(__file__))
     path['image'] = os.path.join(path['file'], "images")
+    gameover = False
 
     @staticmethod
     def dim():
@@ -231,13 +232,20 @@ class ChargedLauncher(Launcher):
         self.charge_speed = 1000
         self.force = 0
         self.holding = False
+        self.ball_number = 0
 
     def update(self) -> None:
         if self.charging and self.force <= 3000:
             self.force += self.charge_speed * Settings.deltatime
 
     def place_ball(self) -> None:
-        self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 300)
+        if self.ball_number < 3:
+            self.ball_number += 1 
+            print(self.ball_number)
+            self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 300)
+        else:
+            Settings.gameover = True
+            print("Game Over")
 
     def hold_ball(self) -> None:
         self.ball.sprite.direction[1] = 0
@@ -449,7 +457,8 @@ class Game(object):
         while self.running:
             Settings.deltatime = self.clock.tick(Settings.fps) / 1000
             self.watch_for_events()
-            self.update()
+            if not Settings.gameover: 
+                self.update()
             self.draw()
         pygame.quit()
 
