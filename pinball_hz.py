@@ -156,6 +156,14 @@ class WallDBT(Wall):
         self.image = pygame.transform.rotate(self.image_template, angle)
 
 
+class LeftFlipper(WallDTB):
+    def __init__(self, pos_x, pos_y, size) -> None:
+        super().__init__(pos_x, pos_y, size)
+        self.image = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.transform_image(45)
+        self.generate_rect()
+
+
 class RailDTB(WallDTB):
     def __init__(self, x, y, size) -> None:
         super().__init__(x, y, size)
@@ -166,6 +174,7 @@ class RailDTB(WallDTB):
         y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centerx += y
 
+
 class RailDBT(WallDBT):
     def __init__(self, x, y, size) -> None:
         super().__init__(x, y, size)
@@ -175,6 +184,7 @@ class RailDBT(WallDBT):
     def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centerx -= y
+
 
 #Returns if a certain time has passed
 class Timer(object):
@@ -402,10 +412,12 @@ class Table(object):
     def objects(self) -> None:
         self.ball = pygame.sprite.GroupSingle(Ball())
         self.walls = pygame.sprite.Group()
+        self.flipperpair = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
         self.launchlane()
         self.exitlanes()
         self.borders()
+        self.flippers()
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
@@ -427,6 +439,9 @@ class Table(object):
         self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 100))
         self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, self.width / 2))
         self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
+
+    def flippers(self) -> None:
+        self.flipperpair.add(LeftFlipper(self.l_guide, self.b_guide - 179, 100))
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -490,6 +505,7 @@ class Table(object):
         self.ball.draw(screen)
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
+        self.flipperpair.draw(screen)
         self.rails.draw(screen)
         self.score.draw(screen)
 
