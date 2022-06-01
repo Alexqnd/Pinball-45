@@ -380,6 +380,9 @@ class Table(object):
         self.r_guide = self.width + self.margin_lr
         self.b_guide = self.height + self.margin_t
         self.l_guide = self.margin_lr
+        self.cx_guide = self.margin_lr + self.width / 2
+        self.score = 0
+        self.scoredisplay = Display(self.cx_guide, self.t_guide * 2, self.score)
         self.objects()
 
     def objects(self) -> None:
@@ -465,6 +468,7 @@ class Table(object):
         self.chargedlauncher.update()
         self.collision()
         self.out_of_table()
+        self.scoredisplay.update(self.score)
 
     def draw(self, screen) -> None:
         self.debuglauncher.draw(screen)
@@ -472,6 +476,7 @@ class Table(object):
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
         self.rails.draw(screen)
+        self.scoredisplay.draw(screen)
 
 
 #main class    
