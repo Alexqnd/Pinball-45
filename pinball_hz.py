@@ -233,7 +233,7 @@ class ChargedLauncher(Launcher):
         self.force = 0
         self.holding = False
         self.ball_number = 0
-        self.display = Display(100, 300, "3")
+        self.display = Display(self.pos_x, self.pos_y - 100, str(self.ball_number))
 
     def update(self) -> None:
         if self.charging and self.force <= 3000:
