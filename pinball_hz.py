@@ -436,8 +436,8 @@ class Table(object):
         self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 20))
 
     def exitlanes(self) -> None:
-        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, self.width / 3))
-        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, self.width / 3))
+        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 70))
+        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 70))
 
     def borders(self) -> None:
         self.walls.add(WallH(self.l_guide, self.t_guide, self.width))
@@ -449,8 +449,8 @@ class Table(object):
         self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
 
     def flippers(self) -> None:
-        self.flipperpair.add(LeftFlipper(self.l_guide, self.b_guide - 179, 100))
-        self.flipperpair.add(RightFlipper(self.l_guide, self.b_guide - 179, 100))
+        self.flipperpair.add(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100))
+        self.flipperpair.add(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100))
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
