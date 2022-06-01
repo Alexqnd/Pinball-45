@@ -1,3 +1,4 @@
+from calendar import c
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_t, K_g, K_SPACE)
 import os
@@ -361,6 +362,19 @@ class Display(pygame.sprite.Sprite):
         screen.blit(self.rendered_text, self.rect)
 
 
+class Score(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y) -> None:
+        self.points = 0
+        self.scoredisplay = Display(pos_x, pos_y, self.points)
+
+    def add_points(self, points) -> None:
+        self.points += points
+        self.scoredisplay.update(self.points)
+
+    def draw(self, screen) -> None:
+        self.scoredisplay.draw(screen)
+
+
 class Background(object):
     def __init__(self) -> None:
         super().__init__()
@@ -383,7 +397,6 @@ class Table(object):
         self.l_guide = self.margin_lr
         self.cx_guide = self.margin_lr + self.width / 2
         self.score = 0
-        self.scoredisplay = Display(self.cx_guide, self.t_guide * 2, self.score)
         self.objects()
 
     def objects(self) -> None:
@@ -396,6 +409,7 @@ class Table(object):
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
+        self.score = Score(self.cx_guide, self.t_guide * 2)
         
     def launchlane(self) -> None:
         self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, self.height - 140))
@@ -429,6 +443,7 @@ class Table(object):
 
     def out_of_table(self):
         if self.ball.sprite.rect.top > self.b_guide:
+            self.score.add_points(10000)
             self.chargedlauncher.sprite.place_ball()
 
     def watch_for_events(self, event) -> None:
@@ -469,7 +484,6 @@ class Table(object):
         self.chargedlauncher.update()
         self.collision()
         self.out_of_table()
-        self.scoredisplay.update(self.score)
 
     def draw(self, screen) -> None:
         self.debuglauncher.draw(screen)
@@ -477,7 +491,7 @@ class Table(object):
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
         self.rails.draw(screen)
-        self.scoredisplay.draw(screen)
+        self.score.draw(screen)
 
 
 #main class    
