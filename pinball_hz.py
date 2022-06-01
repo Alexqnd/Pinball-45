@@ -164,6 +164,14 @@ class LeftFlipper(WallDTB):
         self.generate_rect()
 
 
+class RightFlipper(WallDBT):
+    def __init__(self, pos_x, pos_y, size) -> None:
+        super().__init__(pos_x, pos_y, size)
+        self.image = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.transform_image(315)
+        self.generate_rect()
+
+
 class RailDTB(WallDTB):
     def __init__(self, x, y, size) -> None:
         super().__init__(x, y, size)
@@ -442,6 +450,7 @@ class Table(object):
 
     def flippers(self) -> None:
         self.flipperpair.add(LeftFlipper(self.l_guide, self.b_guide - 179, 100))
+        self.flipperpair.add(RightFlipper(self.l_guide, self.b_guide - 179, 100))
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
