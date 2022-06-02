@@ -432,6 +432,8 @@ class Table(object):
 
     def objects(self) -> None:
         self.ball = pygame.sprite.GroupSingle(Ball())
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
+        self.chargedlauncher.sprite.place_ball()
         self.walls = pygame.sprite.Group()
         self.flipperpair = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
@@ -439,8 +441,6 @@ class Table(object):
         self.exitlanes()
         self.borders()
         self.flippers()
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
-        self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
