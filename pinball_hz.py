@@ -1,5 +1,5 @@
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_d, K_a, K_r, K_t, K_h, K_g, K_f, K_u, K_i, K_k, K_SPACE)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_a, K_d, K_r, K_t, K_h, K_g, K_f, K_u, K_i, K_k, K_SPACE)
 import os
 import math
 from abc import ABC, abstractmethod
@@ -163,6 +163,9 @@ class LeftFlipper(WallDTB):
         self.transform_image(45)
         self.generate_rect()
 
+    def move(self):
+        print("left")
+
 
 class RightFlipper(WallDBT):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
@@ -171,6 +174,9 @@ class RightFlipper(WallDBT):
         self.rail = rail
         self.transform_image(315)
         self.generate_rect()
+
+    def move(self):
+        print("right")
 
 
 class RailDTB(WallDTB):
@@ -466,8 +472,11 @@ class Table(object):
         right_rail = RailDBT(self.r_guide - 146, self.b_guide - 172, 100)
         self.rails.add(left_rail)
         self.rails.add(right_rail)
-        self.flipperpair.add(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, left_rail))
-        self.flipperpair.add(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100, right_rail))
+        self.flipperlist = []
+        self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, left_rail))
+        self.flipperlist.append(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100, right_rail))
+        self.flipperpair.add(self.flipperlist[0])
+        self.flipperpair.add(self.flipperlist[1])
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -489,7 +498,11 @@ class Table(object):
 
     def watch_for_events(self, event) -> None:
         if event.type == KEYDOWN:
-            if event.key == K_SPACE:
+            if event.key == K_a:
+                self.flipperlist[0].move()
+            elif event.key == K_d:
+                self.flipperlist[1].move()
+            elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.charge()
             elif event.key == K_r:
                 self.restart()
