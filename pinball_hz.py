@@ -260,6 +260,10 @@ class ChargedLauncher(Launcher):
         if self.charging and self.force <= 3000:
             self.force += self.charge_speed * Settings.deltatime
 
+    def reset(self) -> None:
+        self.ball_number = 0
+        self.place_ball()
+
     def place_ball(self) -> None:
         if self.ball_number < 3:
             self.ball_number += 1 
@@ -391,6 +395,10 @@ class Score(pygame.sprite.Sprite):
         self.points += points
         self.scoredisplay.update(self.points)
 
+    def reset(self) -> None:
+        self.points = 0
+        self.scoredisplay.update(self.points)
+
     def draw(self, screen) -> None:
         self.scoredisplay.draw(screen)
 
@@ -416,8 +424,12 @@ class Table(object):
         self.b_guide = self.height + self.margin_t
         self.l_guide = self.margin_lr
         self.cx_guide = self.margin_lr + self.width / 2
-        self.score = 0
         self.objects()
+
+    def restart(self) -> None:
+        Settings.gameover = False
+        self.score.reset()
+        self.chargedlauncher.sprite.reset()
 
     def objects(self) -> None:
         self.ball = pygame.sprite.GroupSingle(Ball())
@@ -432,7 +444,7 @@ class Table(object):
         self.chargedlauncher.sprite.place_ball()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
         self.score = Score(self.cx_guide, self.t_guide * 2)
-        
+
     def launchlane(self) -> None:
         self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, self.height - 140))
         self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 20))
@@ -480,6 +492,8 @@ class Table(object):
         if event.type == KEYDOWN:
             if event.key == K_SPACE:
                 self.chargedlauncher.sprite.charge()
+            elif event.key == K_r:
+                self.restart()
                 
             #Controls the DebugLauncher
             elif event.key == K_i:
