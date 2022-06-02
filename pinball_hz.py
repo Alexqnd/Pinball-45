@@ -55,15 +55,15 @@ class Wall(pygame.sprite.Sprite, ABC):
         self.pos_x = x
         self.pos_y = y
         self.preserved_energy = 0.9
+        self.image_template = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
 
     def rect_from_image(self, angle) -> None:
-        self.image = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
         self.transform_image(angle)
         self.generate_rect()
 
     def transform_image(self, angle) -> None:
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image_template, angle)
+        self.image = pygame.transform.scale(self.image_template, (self.width, self.size)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image, angle)
 
     def generate_rect(self) -> None:
         self.rect = self.image.get_rect()
@@ -151,14 +151,14 @@ class WallDBT(Wall):
         self.rect.topright = (self.pos_x, self.pos_y)
 
     def transform_image(self, angle) -> None:
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.size)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image_template, angle)
+        self.image = pygame.transform.scale(self.image_template, (self.width, self.size)).convert_alpha()
+        self.image = pygame.transform.rotate(self.image, angle)
 
 
 class LeftFlipper(WallDTB):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
         super().__init__(pos_x, pos_y, size)
-        self.image = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
         self.rail = rail
         self.transform_image(45)
         self.generate_rect()
@@ -175,7 +175,7 @@ class LeftFlipper(WallDTB):
 class RightFlipper(WallDBT):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
         super().__init__(pos_x, pos_y, size)
-        self.image = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
         self.rail = rail
         self.transform_image(315)
         self.generate_rect()
