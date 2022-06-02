@@ -1,6 +1,6 @@
 from calendar import c
 import pygame
-from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_w, K_d, K_s, K_a, K_r, K_t, K_g, K_SPACE)
+from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_d, K_a, K_r, K_t, K_h, K_g, K_f, K_u, K_i, K_k, K_SPACE)
 import os
 import math
 from abc import ABC, abstractmethod
@@ -482,9 +482,9 @@ class Table(object):
                 self.chargedlauncher.sprite.charge()
                 
             #Controls the DebugLauncher
-            elif event.key == K_t:
+            elif event.key == K_i:
                 self.debuglauncher.sprite.increase_grit()
-            elif event.key == K_g:
+            elif event.key == K_k:
                 self.debuglauncher.sprite.decrease_grit()           
             elif event.key == K_LEFT:
                 self.debuglauncher.sprite.rotate_left()
@@ -494,15 +494,15 @@ class Table(object):
                 self.debuglauncher.sprite.increase_force()
             elif event.key == K_DOWN:
                 self.debuglauncher.sprite.decrease_force()
-            elif event.key == K_w:
+            elif event.key == K_t:
                 self.debuglauncher.sprite.move_up()
-            elif event.key == K_d:
+            elif event.key == K_h:
                 self.debuglauncher.sprite.move_right()
-            elif event.key == K_s:
+            elif event.key == K_g:
                 self.debuglauncher.sprite.move_down()
-            elif event.key == K_a:
+            elif event.key == K_f:
                 self.debuglauncher.sprite.move_left()
-            elif event.key == K_r:
+            elif event.key == K_u:
                 self.debuglauncher.sprite.launch_ball()
         
         elif event.type == KEYUP:
