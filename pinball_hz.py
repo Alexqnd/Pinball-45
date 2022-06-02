@@ -165,11 +165,15 @@ class LeftFlipper(WallDTB):
 
     def move(self):
         self.transform_image(315)
+        self.rail.transform_image(315)
         self.generate_rect()
+        self.rail.generate_rect()
 
     def move_back(self):
         self.transform_image(45)
+        self.rail.transform_image(45)
         self.generate_rect()
+        self.rail.generate_rect()
 
 
 class RightFlipper(WallDBT):
