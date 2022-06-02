@@ -168,6 +168,7 @@ class LeftFlipper(WallDTB):
         self.rail.transform_image(315)
         self.generate_rect()
         self.rail.generate_rect()
+        self.rect.centery -= self.size / 2
 
     def move_back(self):
         self.transform_image(45)
