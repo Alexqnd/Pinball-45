@@ -159,7 +159,7 @@ class LeftFlipper(WallDTB):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
-        self.rail = rail
+        #self.rail = rail
         self.transform_image(45)
         self.generate_rect()
 
@@ -167,7 +167,7 @@ class LeftFlipper(WallDTB):
         self.transform_image(315)
         self.generate_rect()
         self.rect.centery -= self.size / 2
-        self.move_rail()
+        #self.move_rail()
 
     def move_rail(self):
         self.rail.transform_image(315)
@@ -176,9 +176,9 @@ class LeftFlipper(WallDTB):
 
     def move_back(self):
         self.transform_image(45)
-        self.rail.transform_image(45)
+    #    self.rail.transform_image(45)
         self.generate_rect()
-        self.rail.generate_rect()
+    #    self.rail.generate_rect()
 
 
 class RightFlipper(WallDBT):
@@ -484,7 +484,7 @@ class Table(object):
     def flippers(self) -> None:
         left_rail = RailDTB(self.l_guide + 110, self.b_guide - 172, 100)
         right_rail = RailDBT(self.r_guide - 146, self.b_guide - 172, 100)
-        self.rails.add(left_rail)
+        #self.rails.add(left_rail)
         self.rails.add(right_rail)
         self.flipperlist = []
         self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, left_rail))
