@@ -1,4 +1,3 @@
-from calendar import c
 import pygame
 from pygame.constants import (QUIT, K_ESCAPE, KEYDOWN, KEYUP, K_UP, K_RIGHT, K_DOWN, K_LEFT, K_d, K_a, K_r, K_t, K_h, K_g, K_f, K_u, K_i, K_k, K_SPACE)
 import os
