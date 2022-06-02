@@ -164,7 +164,12 @@ class LeftFlipper(WallDTB):
         self.generate_rect()
 
     def move(self):
-        print("left")
+        self.transform_image(315)
+        self.generate_rect()
+
+    def move_back(self):
+        self.transform_image(45)
+        self.generate_rect()
 
 
 class RightFlipper(WallDBT):
@@ -532,7 +537,9 @@ class Table(object):
                 self.debuglauncher.sprite.launch_ball()
         
         elif event.type == KEYUP:
-            if event.key == K_SPACE:
+            if event.key == K_a:
+                self.flipperlist[0].move_back()
+            elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.launch_ball()
 
     def update(self) -> None:
