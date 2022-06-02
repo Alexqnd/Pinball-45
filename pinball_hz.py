@@ -159,6 +159,7 @@ class LeftFlipper(WallDTB):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
         super().__init__(pos_x, pos_y, size)
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.flipperarea = LeftFlipperArea(pos_x + 20, pos_y + 20, size, size)
         #self.rail = rail
         self.transform_image(45)
         self.generate_rect()
@@ -180,6 +181,23 @@ class LeftFlipper(WallDTB):
         self.generate_rect()
     #    self.rail.generate_rect()
 
+    def draw(self, screen):
+        self.flipperarea.draw(screen)
+        screen.blit(self.image, self.rect)
+
+
+class LeftFlipperArea(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, width, height) -> None:
+        super().__init__()
+        self.image = pygame.image.load(Settings.imagepath("flipperarea.png")).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.left = pos_x
+        self.rect.centery = pos_y
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
 
 class RightFlipper(WallDBT):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
@@ -191,6 +209,9 @@ class RightFlipper(WallDBT):
 
     def move(self):
         print("right")
+
+    def draw(self, screen):
+        pass
 
 
 class RailDTB(WallDTB):
@@ -562,7 +583,8 @@ class Table(object):
         self.ball.draw(screen)
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
-        self.flipperpair.draw(screen)
+        for flipper in self.flipperpair:
+            flipper.draw(screen)
         self.rails.draw(screen)
         self.score.draw(screen)
 
