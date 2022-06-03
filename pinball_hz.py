@@ -185,16 +185,35 @@ class LeftFlipper(pygame.sprite.Sprite):
         self.ball.sprite.direction[1] = -3000
     
 
-class RightFlipper(WallDBT):
-    def __init__(self, pos_x, pos_y, size, rail) -> None:
-        super().__init__(pos_x, pos_y, size)
+class RightFlipper(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, width, height, ball) -> None:
+        super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.width = width
+        self.height = height
+        self.ball = ball
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
-        self.rail = rail
-        self.transform_image(315)
+        self.image = pygame.transform.flip(self.image_template, True, False)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.generate_rect()
 
+    def generate_rect(self):
+        self.rect = self.image.get_rect()
+        self.rect.left = self.pos_x
+        self.rect.centery = self.pos_y
+        self.mask = pygame.mask.from_surface(self.image)
+        
     def move(self):
-        print("right")
+        self.image = pygame.transform.flip(self.image_template, True, True)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
+    def move_back(self):
+        self.image = pygame.transform.flip(self.image_template, True, False)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
+    def move_ball_upward(self):
+        self.ball.sprite.direction[1] = -3000
 
     def draw(self, screen):
         pass
@@ -491,7 +510,7 @@ class Table(object):
     def flippers(self) -> None:
         self.flipperlist = []
         self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
-        self.flipperlist.append(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100, 100))
+        self.flipperlist.append(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, self.ball))
         self.flipperpair.add(self.flipperlist[0])
         self.flipperpair.add(self.flipperlist[1])
 
@@ -522,6 +541,9 @@ class Table(object):
                     flipper.move_ball_upward()
                 self.flipperlist[0].move()
             elif event.key == K_d:
+                collide = pygame.sprite.groupcollide(self.flipperpair, self.ball, False, False, pygame.sprite.collide_mask)
+                for flipper in collide:
+                    flipper.move_ball_upward()
                 self.flipperlist[1].move()
             elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.charge()
@@ -555,6 +577,8 @@ class Table(object):
         elif event.type == KEYUP:
             if event.key == K_a:
                 self.flipperlist[0].move_back()
+            elif event.key == K_d:
+                self.flipperlist[1].move_back()
             elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.launch_ball()
 
