@@ -156,12 +156,13 @@ class WallDBT(Wall):
 
 
 class LeftFlipper(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, width, height) -> None:
+    def __init__(self, pos_x, pos_y, width, height, ball) -> None:
         super().__init__()
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.width = width
         self.height = height
+        self.ball = ball
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image_template, (self.width, self.height))
         self.generate_rect()
@@ -179,6 +180,9 @@ class LeftFlipper(pygame.sprite.Sprite):
     def move_back(self):
         self.image = pygame.transform.flip(self.image_template, False, False)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
+    def move_ball_upward(self):
+        self.ball.sprite.direction[1] = -3000
     
 
 class RightFlipper(WallDBT):
@@ -486,7 +490,7 @@ class Table(object):
 
     def flippers(self) -> None:
         self.flipperlist = []
-        self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100))
+        self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
         self.flipperlist.append(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100, 100))
         self.flipperpair.add(self.flipperlist[0])
         self.flipperpair.add(self.flipperlist[1])
@@ -513,6 +517,9 @@ class Table(object):
     def watch_for_events(self, event) -> None:
         if event.type == KEYDOWN:
             if event.key == K_a:
+                collide = pygame.sprite.groupcollide(self.flipperpair, self.ball, False, False, pygame.sprite.collide_mask)
+                for flipper in collide:
+                    flipper.move_ball_upward()
                 self.flipperlist[0].move()
             elif event.key == K_d:
                 self.flipperlist[1].move()
