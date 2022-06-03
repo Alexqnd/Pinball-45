@@ -566,12 +566,12 @@ class Table(object):
 
     def draw(self, screen) -> None:
         self.debuglauncher.draw(screen)
-        self.ball.draw(screen)
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
         self.flipperpair.draw(screen)
         self.rails.draw(screen)
         self.score.draw(screen)
+        self.ball.draw(screen)
 
 
 #main class    
