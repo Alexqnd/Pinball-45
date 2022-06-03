@@ -155,48 +155,22 @@ class WallDBT(Wall):
         self.image = pygame.transform.rotate(self.image, angle)
 
 
-class LeftFlipper(WallDTB):
-    def __init__(self, pos_x, pos_y, size, rail) -> None:
-        super().__init__(pos_x, pos_y, size)
-        self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
-        self.flipperarea = LeftFlipperArea(pos_x + 20, pos_y + 20, size, size)
-        #self.rail = rail
-        self.transform_image(45)
-        self.generate_rect()
-
-    def move(self):
-        self.transform_image(315)
-        self.generate_rect()
-        self.rect.centery -= self.size / 2
-        #self.move_rail()
-
-    def move_rail(self):
-        self.rail.transform_image(315)
-        self.rail.generate_rect()
-        self.rail.rect.centery -= self.rail.size / 1.5
-
-    def move_back(self):
-        self.transform_image(45)
-    #    self.rail.transform_image(45)
-        self.generate_rect()
-    #    self.rail.generate_rect()
-
-    def draw(self, screen):
-        self.flipperarea.draw(screen)
-        screen.blit(self.image, self.rect)
-
-
-class LeftFlipperArea(pygame.sprite.Sprite):
+class LeftFlipper(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, width, height) -> None:
         super().__init__()
-        self.image = pygame.image.load(Settings.imagepath("flipperarea.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
+        self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.image = pygame.transform.scale(self.image_template, (width, height))
         self.rect = self.image.get_rect()
         self.rect.left = pos_x
         self.rect.centery = pos_y
+        self.mask = pygame.mask.from_surface(self.image)
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
+    def move(self):
+        pass
+
+    def move_back(self):
+        pass
+    
 
 
 class RightFlipper(WallDBT):
@@ -503,15 +477,12 @@ class Table(object):
         self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
 
     def flippers(self) -> None:
-        left_rail = RailDTB(self.l_guide + 110, self.b_guide - 172, 100)
-        right_rail = RailDBT(self.r_guide - 146, self.b_guide - 172, 100)
-        #self.rails.add(left_rail)
-        self.rails.add(right_rail)
         self.flipperlist = []
-        self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, left_rail))
-        self.flipperlist.append(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100, right_rail))
+        self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100))
+        self.flipperlist.append(RightFlipper(self.r_guide - 126, self.b_guide - 147, 100, 100))
         self.flipperpair.add(self.flipperlist[0])
         self.flipperpair.add(self.flipperlist[1])
+
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -583,8 +554,7 @@ class Table(object):
         self.ball.draw(screen)
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
-        for flipper in self.flipperpair:
-            flipper.draw(screen)
+        self.flipperpair.draw(screen)
         self.rails.draw(screen)
         self.score.draw(screen)
 
