@@ -158,20 +158,28 @@ class WallDBT(Wall):
 class LeftFlipper(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, width, height) -> None:
         super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.width = width
+        self.height = height
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image_template, (width, height))
-        self.rect = self.image.get_rect()
-        self.rect.left = pos_x
-        self.rect.centery = pos_y
-        self.mask = pygame.mask.from_surface(self.image)
+        self.image = pygame.transform.scale(self.image_template, (self.width, self.height))
+        self.generate_rect()
 
+    def generate_rect(self):
+        self.rect = self.image.get_rect()
+        self.rect.left = self.pos_x
+        self.rect.centery = self.pos_y
+        self.mask = pygame.mask.from_surface(self.image)
+        
     def move(self):
-        pass
+        self.image = pygame.transform.flip(self.image_template, False, True)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
     def move_back(self):
-        pass
+        self.image = pygame.transform.flip(self.image_template, False, False)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
     
-
 
 class RightFlipper(WallDBT):
     def __init__(self, pos_x, pos_y, size, rail) -> None:
