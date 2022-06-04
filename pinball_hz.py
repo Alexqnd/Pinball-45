@@ -154,6 +154,7 @@ class WallDBT(Wall):
         self.image = pygame.transform.scale(self.image_template, (self.width, self.size)).convert_alpha()
         self.image = pygame.transform.rotate(self.image, angle)
 
+
 class Flipper(pygame.sprite.Sprite, ABC):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
         super().__init__()
@@ -163,51 +164,53 @@ class Flipper(pygame.sprite.Sprite, ABC):
         self.height = height
         self.ball = ball
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.image = self.image_template
 
-    def generate_rect(self):
+    def generate_rect(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.left = self.pos_x
         self.rect.centery = self.pos_y
         self.mask = pygame.mask.from_surface(self.image)
 
+    def flip_image(self, on_x, on_y) -> None:
+        self.image = pygame.transform.flip(self.image_template, on_x, on_y)
+        self.scale_image()
+
+    def scale_image(self) -> None:
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
+
 class LeftFlipper(Flipper):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, ball)
-        self.image = pygame.transform.scale(self.image_template, (self.width, self.height))
+        self.scale_image()
         self.generate_rect()
    
-    def move(self):
-        self.image = pygame.transform.flip(self.image_template, False, True)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+    def move(self) -> None:
+        self.flip_image(False, True)
 
-    def move_back(self):
-        self.image = pygame.transform.flip(self.image_template, False, False)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+    def move_back(self) -> None:
+        self.flip_image(False, False)
 
-    def move_ball_upward(self):
+    def move_ball_upward(self) -> None:
         self.ball.sprite.direction[1] = -3000
     
 
 class RightFlipper(Flipper):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, ball)
-        self.image = pygame.transform.flip(self.image_template, True, False)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.flip_image(True, False)   
         self.generate_rect()
         
-    def move(self):
-        self.image = pygame.transform.flip(self.image_template, True, True)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+    def move(self) -> None:
+        self.flip_image(True, True)
 
-    def move_back(self):
-        self.image = pygame.transform.flip(self.image_template, True, False)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+    def move_back(self) -> None:
+        self.flip_image(True, False)
 
-    def move_ball_upward(self):
+    def move_ball_upward(self) -> None:
         self.ball.sprite.direction[1] = -3000
 
-    def draw(self, screen):
-        pass
 
 
 class RailDTB(WallDTB):
