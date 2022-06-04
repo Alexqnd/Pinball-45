@@ -31,6 +31,9 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.pos_x = pos_x
         self.pos_y = pos_y
 
+    def load_image(self, image_name = str):
+        return pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
+
 
 #Ball on the Pinball-table
 class Ball(TableObject):
@@ -40,7 +43,7 @@ class Ball(TableObject):
         self.pos_y = pos_y
         self.width = 25
         self.height = 25
-        self.image = pygame.image.load(Settings.imagepath("ball.png")).convert_alpha()
+        self.image = self.load_image("ball.png")
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
@@ -63,7 +66,7 @@ class Wall(TableObject, ABC):
         self.size = size
         self.width = 5
         self.preserved_energy = 0.9
-        self.image_template = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
+        self.image_template = self.load_image("wall.png")
 
     def rect_from_image(self, angle) -> None:
         self.transform_image(angle)
@@ -171,7 +174,7 @@ class Flipper(TableObject, ABC):
         self.width = width
         self.height = height
         self.ball = ball
-        self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        self.image_template = self.load_image("flipper.png")
         self.image = self.image_template
 
     def generate_rect(self) -> None:
@@ -304,7 +307,7 @@ class Launcher(TableObject):
 class ChargedLauncher(Launcher):
     def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, angle, force, ball)
-        self.image = pygame.image.load(Settings.imagepath("chargedlauncher.png")).convert_alpha()
+        self.image = self.load_image("chargedlauncher.png")
         self.generate_rect()
         self.charging = False
         self.charge_speed = 1000
@@ -358,7 +361,7 @@ class ChargedLauncher(Launcher):
 class DebugLauncher(Launcher):
     def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, angle, force, ball)
-        self.image = pygame.image.load(Settings.imagepath("debuglauncher.png")).convert_alpha()
+        self.image = self.load_image("debuglauncher.png")
         self.grit = 1
         self.generate_rect()
 
