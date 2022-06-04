@@ -154,8 +154,7 @@ class WallDBT(Wall):
         self.image = pygame.transform.scale(self.image_template, (self.width, self.size)).convert_alpha()
         self.image = pygame.transform.rotate(self.image, angle)
 
-
-class LeftFlipper(pygame.sprite.Sprite):
+class Flipper(pygame.sprite.Sprite, ABC):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
         super().__init__()
         self.pos_x = pos_x
@@ -164,15 +163,19 @@ class LeftFlipper(pygame.sprite.Sprite):
         self.height = height
         self.ball = ball
         self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
-        self.image = pygame.transform.scale(self.image_template, (self.width, self.height))
-        self.generate_rect()
 
     def generate_rect(self):
         self.rect = self.image.get_rect()
         self.rect.left = self.pos_x
         self.rect.centery = self.pos_y
         self.mask = pygame.mask.from_surface(self.image)
-        
+
+class LeftFlipper(Flipper):
+    def __init__(self, pos_x, pos_y, width, height, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, ball)
+        self.image = pygame.transform.scale(self.image_template, (self.width, self.height))
+        self.generate_rect()
+   
     def move(self):
         self.image = pygame.transform.flip(self.image_template, False, True)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
@@ -185,24 +188,12 @@ class LeftFlipper(pygame.sprite.Sprite):
         self.ball.sprite.direction[1] = -3000
     
 
-class RightFlipper(pygame.sprite.Sprite):
+class RightFlipper(Flipper):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
-        super().__init__()
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.width = width
-        self.height = height
-        self.ball = ball
-        self.image_template = pygame.image.load(Settings.imagepath("flipper.png")).convert_alpha()
+        super().__init__(pos_x, pos_y, width, height, ball)
         self.image = pygame.transform.flip(self.image_template, True, False)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.generate_rect()
-
-    def generate_rect(self):
-        self.rect = self.image.get_rect()
-        self.rect.left = self.pos_x
-        self.rect.centery = self.pos_y
-        self.mask = pygame.mask.from_surface(self.image)
         
     def move(self):
         self.image = pygame.transform.flip(self.image_template, True, True)
