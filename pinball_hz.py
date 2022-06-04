@@ -37,6 +37,10 @@ class TableObject(pygame.sprite.Sprite, ABC):
     def scale_image(self, width, height):
         return pygame.transform.scale(self.image, (width, height)).convert_alpha()
 
+    def rotate_image(self, width, size, angle):
+        self.image_template = self.scale_image(width, size)
+        self.image = pygame.transform.rotate(self.image_template, angle)
+
     def rect_center(self):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
@@ -82,12 +86,8 @@ class Wall(TableObject, ABC):
         self.image = self.load_image("wall.png")
 
     def rect_from_image(self, angle) -> None:
-        self.transform_image(angle)
+        self.rotate_image(self.width, self.size, angle)
         self.rect_topleft()
-
-    def transform_image(self, angle) -> None:
-        self.image_template = self.scale_image(self.width, self.size)
-        self.image = pygame.transform.rotate(self.image_template, angle)
 
     @abstractmethod
     def reflect(self, ball) -> None:
@@ -167,12 +167,8 @@ class WallDBT(Wall):
         ball.sprite.rect.centery += y
 
     def rect_from_image(self, angle) -> None:
-        self.transform_image(angle)
+        self.rotate_image(self.width, self.size, angle)
         self.rect_topright()
-
-    def transform_image(self, angle) -> None:
-        self.image_template = self.scale_image(self.width, self.size)
-        self.image = pygame.transform.rotate(self.image_template, angle)
 
 
 class Flipper(TableObject, ABC):
@@ -306,8 +302,7 @@ class Launcher(TableObject):
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
     def generate_rect(self) -> None:
-        self.image_template = self.scale_image(self.width, self.height)
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
+        self.rotate_image(self.width, self.height, self.angle)
         self.rect_center()
 
 
