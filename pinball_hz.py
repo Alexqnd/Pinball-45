@@ -41,6 +41,11 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
+    def rect_topleft(self):
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.pos_x, self.pos_y)
+
+
 #Ball on the Pinball-table
 class Ball(TableObject):
     def __init__(self, pos_x, pos_y) -> None:
@@ -75,15 +80,11 @@ class Wall(TableObject, ABC):
 
     def rect_from_image(self, angle) -> None:
         self.transform_image(angle)
-        self.generate_rect()
+        self.rect_topleft()
 
     def transform_image(self, angle) -> None:
         self.image_template = self.scale_image(self.width, self.size)
         self.image = pygame.transform.rotate(self.image_template, angle)
-
-    def generate_rect(self) -> None:
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (self.pos_x, self.pos_y)
 
     @abstractmethod
     def reflect(self, ball) -> None:
