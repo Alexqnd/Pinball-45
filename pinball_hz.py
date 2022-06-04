@@ -34,6 +34,9 @@ class TableObject(pygame.sprite.Sprite, ABC):
     def load_image(self, image_name = str):
         return pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
 
+    def scale_image(self, width, height):
+        return pygame.transform.scale(self.image, (width, height)).convert_alpha()
+
 
 #Ball on the Pinball-table
 class Ball(TableObject):
@@ -44,7 +47,7 @@ class Ball(TableObject):
         self.width = 25
         self.height = 25
         self.image = self.load_image("ball.png")
-        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.image = self.scale_image(self.width, self.height)
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
@@ -66,15 +69,15 @@ class Wall(TableObject, ABC):
         self.size = size
         self.width = 5
         self.preserved_energy = 0.9
-        self.image_template = self.load_image("wall.png")
+        self.image = self.load_image("wall.png")
 
     def rect_from_image(self, angle) -> None:
         self.transform_image(angle)
         self.generate_rect()
 
     def transform_image(self, angle) -> None:
-        self.image = pygame.transform.scale(self.image_template, (self.width, self.size)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image, angle)
+        self.image_template = self.scale_image(self.width, self.size)
+        self.image = pygame.transform.rotate(self.image_template, angle)
 
     def generate_rect(self) -> None:
         self.rect = self.image.get_rect()
@@ -162,8 +165,8 @@ class WallDBT(Wall):
         self.rect.topright = (self.pos_x, self.pos_y)
 
     def transform_image(self, angle) -> None:
-        self.image = pygame.transform.scale(self.image_template, (self.width, self.size)).convert_alpha()
-        self.image = pygame.transform.rotate(self.image, angle)
+        self.image_template = self.scale_image(self.width, self.size)
+        self.image = pygame.transform.rotate(self.image_template, angle)
 
 
 class Flipper(TableObject, ABC):
@@ -297,7 +300,7 @@ class Launcher(TableObject):
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
     def generate_rect(self) -> None:
-        self.image_template = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
+        self.image_template = self.scale_image(self.width, self.height)
         self.image = pygame.transform.rotate(self.image_template, self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
