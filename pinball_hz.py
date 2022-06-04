@@ -487,7 +487,6 @@ class Table(object):
         self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
         self.chargedlauncher.sprite.place_ball()
         self.walls = pygame.sprite.Group()
-        self.flipperpair = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
         self.launchlane()
         self.exitlanes()
@@ -514,12 +513,8 @@ class Table(object):
         self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
 
     def flippers(self) -> None:
-        self.flipperlist = []
-        self.flipperlist.append(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
-        self.flipperlist.append(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, self.ball))
-        self.flipperpair.add(self.flipperlist[0])
-        self.flipperpair.add(self.flipperlist[1])
-
+        self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
+        self.rightflipper = pygame.sprite.GroupSingle(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, self.ball))
 
     def collision(self) -> None:
         collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
@@ -542,15 +537,13 @@ class Table(object):
     def watch_for_events(self, event) -> None:
         if event.type == KEYDOWN:
             if event.key == K_a:
-                collide = pygame.sprite.groupcollide(self.flipperpair, self.ball, False, False, pygame.sprite.collide_mask)
-                for flipper in collide:
-                    flipper.move_ball_upward()
-                self.flipperlist[0].move()
+                if pygame.sprite.groupcollide(self.leftflipper, self.ball, False, False, pygame.sprite.collide_mask):
+                    self.leftflipper.sprite.move_ball_upward()
+                self.leftflipper.sprite.move()
             elif event.key == K_d:
-                collide = pygame.sprite.groupcollide(self.flipperpair, self.ball, False, False, pygame.sprite.collide_mask)
-                for flipper in collide:
-                    flipper.move_ball_upward()
-                self.flipperlist[1].move()
+                if pygame.sprite.groupcollide(self.rightflipper, self.ball, False, False, pygame.sprite.collide_mask):
+                    self.rightflipper.sprite.move_ball_upward()
+                self.rightflipper.sprite.move()
             elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.charge()
             elif event.key == K_r:
@@ -582,9 +575,9 @@ class Table(object):
         
         elif event.type == KEYUP:
             if event.key == K_a:
-                self.flipperlist[0].move_back()
+                self.leftflipper.sprite.move_back()
             elif event.key == K_d:
-                self.flipperlist[1].move_back()
+                self.rightflipper.sprite.move_back()
             elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.launch_ball()
 
@@ -598,7 +591,8 @@ class Table(object):
         self.debuglauncher.draw(screen)
         self.chargedlauncher.sprite.draw(screen)
         self.walls.draw(screen)
-        self.flipperpair.draw(screen)
+        self.leftflipper.draw(screen)
+        self.rightflipper.draw(screen)
         self.rails.draw(screen)
         self.score.draw(screen)
         self.ball.draw(screen)
