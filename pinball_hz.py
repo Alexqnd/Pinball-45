@@ -45,6 +45,9 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.pos_x, self.pos_y)
 
+    def rect_topright(self):
+        self.rect = self.image.get_rect()
+        self.rect.topright = (self.pos_x, self.pos_y)
 
 #Ball on the Pinball-table
 class Ball(TableObject):
@@ -163,9 +166,9 @@ class WallDBT(Wall):
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centery += y
 
-    def generate_rect(self) -> None:
-        self.rect = self.image.get_rect()
-        self.rect.topright = (self.pos_x, self.pos_y)
+    def rect_from_image(self, angle) -> None:
+        self.transform_image(angle)
+        self.rect_topright()
 
     def transform_image(self, angle) -> None:
         self.image_template = self.scale_image(self.width, self.size)
