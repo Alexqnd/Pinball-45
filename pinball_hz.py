@@ -516,17 +516,21 @@ class Table(object):
         self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
         self.rightflipper = pygame.sprite.GroupSingle(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, self.ball))
 
-    def collision(self) -> None:
-        collide = pygame.sprite.groupcollide(self.walls, self.ball, False, False, pygame.sprite.collide_mask)
-        if pygame.sprite.groupcollide(self.chargedlauncher, self.ball, False, False, pygame.sprite.collide_mask):
+    #Collision between ball and another group
+    def collision(self, collidegroup):
+        return pygame.sprite.groupcollide(collidegroup, self.ball, False, False, pygame.sprite.collide_mask)
+
+    def assign_collision(self) -> None:
+        if self.collision(self.chargedlauncher):
             self.chargedlauncher.sprite.hold_ball()
             self.chargedlauncher.sprite.holding = True
         else:
             self.chargedlauncher.sprite.holding = False
-        for wall in collide:
+
+        for wall in self.collision(self.walls):
             wall.reflect(self.ball)
-        collide = pygame.sprite.groupcollide(self.rails, self.ball, False, False, pygame.sprite.collide_mask)
-        for rail in collide:
+
+        for rail in self.collision(self.rails):
             rail.connect_ball(self.ball)
 
     def out_of_table(self):
@@ -584,7 +588,7 @@ class Table(object):
     def update(self) -> None:
         self.ball.update()
         self.chargedlauncher.update()
-        self.collision()
+        self.assign_collision()
         self.out_of_table()
 
     def draw(self, screen) -> None:
