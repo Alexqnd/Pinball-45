@@ -179,6 +179,18 @@ class Flipper(pygame.sprite.Sprite, ABC):
     def scale_image(self) -> None:
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
+    @abstractmethod
+    def move(self) -> None:
+        pass
+
+    @abstractmethod
+    def move_back(self) -> None:
+        pass
+
+    @abstractmethod
+    def move_ball_upward(self):
+        pass
+
 
 class LeftFlipper(Flipper):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
