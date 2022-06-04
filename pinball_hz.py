@@ -24,16 +24,26 @@ class Settings(object):
         return os.path.join(Settings.path['image'], name)
 
 
-#Ball on the Pinball-table
-class Ball(pygame.sprite.Sprite):
-    def __init__(self) -> None:
+#Every object on the table
+class TableObject(pygame.sprite.Sprite, ABC):
+    def __init__(self, pos_x, pos_y) -> None:
         super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+
+
+#Ball on the Pinball-table
+class Ball(TableObject):
+    def __init__(self, pos_x, pos_y) -> None:
+        super().__init__(pos_x, pos_y)
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.width = 25
         self.height = 25
         self.image = pygame.image.load(Settings.imagepath("ball.png")).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.center = (Settings.window['width'] // 2, 50)
+        self.rect.center = (self.pos_x, self.pos_y)
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
         self.gravity = 981
@@ -47,13 +57,11 @@ class Ball(pygame.sprite.Sprite):
 
 
 #Walls of the table to keep the ball inside
-class Wall(pygame.sprite.Sprite, ABC):
-    def __init__(self, x, y, size) -> None:
-        super().__init__()
+class Wall(TableObject, ABC):
+    def __init__(self, pos_x, pos_y, size) -> None:
+        super().__init__(pos_x, pos_y)
         self.size = size
         self.width = 5
-        self.pos_x = x
-        self.pos_y = y
         self.preserved_energy = 0.9
         self.image_template = pygame.image.load(Settings.imagepath("wall.png")).convert_alpha()
 
@@ -155,9 +163,9 @@ class WallDBT(Wall):
         self.image = pygame.transform.rotate(self.image, angle)
 
 
-class Flipper(pygame.sprite.Sprite, ABC):
+class Flipper(TableObject, ABC):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
-        super().__init__()
+        super().__init__(pos_x, pos_y)
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.width = width
@@ -269,14 +277,12 @@ class Timer(object):
 
 
 #Launches the ball where it is in a given angle with a given force
-class Launcher(pygame.sprite.Sprite):
-    def __init__(self, ball, pos_x, pos_y, force, angle = 0) -> None:
-        super().__init__()
-        self.ball = ball
-        self.pos_x = pos_x
-        self.pos_y = pos_y
+class Launcher(TableObject):
+    def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y)
         self.angle = angle
         self.force = force
+        self.ball = ball
         self.width = 25
         self.height = 25
 
@@ -296,8 +302,8 @@ class Launcher(pygame.sprite.Sprite):
 
 #Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
-    def __init__(self, ball, pos_x, pos_y, force) -> None:
-        super().__init__(ball, pos_x, pos_y, force)
+    def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, angle, force, ball)
         self.image = pygame.image.load(Settings.imagepath("chargedlauncher.png")).convert_alpha()
         self.generate_rect()
         self.charging = False
@@ -350,8 +356,8 @@ class ChargedLauncher(Launcher):
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
-    def __init__(self, ball, pos_x, pos_y, force, angle) -> None:
-        super().__init__(ball, pos_x, pos_y, force, angle)
+    def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, angle, force, ball)
         self.image = pygame.image.load(Settings.imagepath("debuglauncher.png")).convert_alpha()
         self.grit = 1
         self.generate_rect()
@@ -408,9 +414,9 @@ class DebugLauncher(Launcher):
 
 
 #Displaying Text
-class Display(pygame.sprite.Sprite):
+class Display(TableObject):
     def __init__(self, pos_x, pos_y, text) -> None:
-        super().__init__()
+        super().__init__(pos_x, pos_y)
         self.fontsize = 24
         self.fontfamily = pygame.font.get_default_font()
         self.fontcolor = [255, 255, 255]
@@ -437,7 +443,7 @@ class Display(pygame.sprite.Sprite):
         screen.blit(self.rendered_text, self.rect)
 
 
-class Score(pygame.sprite.Sprite):
+class Score(TableObject):
     def __init__(self, pos_x, pos_y) -> None:
         self.points = 0
         self.scoredisplay = Display(pos_x, pos_y, self.points)
@@ -483,8 +489,8 @@ class Table(object):
         self.chargedlauncher.sprite.reset()
 
     def objects(self) -> None:
-        self.ball = pygame.sprite.GroupSingle(Ball())
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.ball, self.r_guide - 17, self.b_guide - 140, 2000))
+        self.ball = pygame.sprite.GroupSingle(Ball(self.r_guide - 17, self.t_guide + 50))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 0, 2000, self.ball))
         self.chargedlauncher.sprite.place_ball()
         self.walls = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
@@ -492,7 +498,7 @@ class Table(object):
         self.exitlanes()
         self.borders()
         self.flippers()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(self.ball, 440, 120, 600, 0))
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 0, 600, self.ball))
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
     def launchlane(self) -> None:
