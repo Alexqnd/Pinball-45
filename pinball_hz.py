@@ -37,6 +37,9 @@ class TableObject(pygame.sprite.Sprite, ABC):
     def scale_image(self, width, height):
         return pygame.transform.scale(self.image, (width, height)).convert_alpha()
 
+    def rect_center(self):
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.pos_x, self.pos_y)
 
 #Ball on the Pinball-table
 class Ball(TableObject):
@@ -48,8 +51,7 @@ class Ball(TableObject):
         self.height = 25
         self.image = self.load_image("ball.png")
         self.image = self.scale_image(self.width, self.height)
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.pos_x, self.pos_y)
+        self.rect_center()
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
         self.gravity = 981
@@ -302,8 +304,7 @@ class Launcher(TableObject):
     def generate_rect(self) -> None:
         self.image_template = self.scale_image(self.width, self.height)
         self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.pos_x, self.pos_y)
+        self.rect_center()
 
 
 #Launcher which will later charge when pressing space. Right now it launches with 100%
