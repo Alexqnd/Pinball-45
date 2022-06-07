@@ -548,6 +548,7 @@ class Table(object):
 
         for wall in self.collision(self.walls):
             wall.control_ball()
+            self.score.add_points(1000)
 
         for rail in self.collision(self.rails):
             rail.control_ball()
