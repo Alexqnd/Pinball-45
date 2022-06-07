@@ -386,10 +386,6 @@ class ChargedLauncher(Launcher):
     def position_ball_launch(self) -> None:
         self.ball.sprite.rect.bottom = self.rect.top - 1
         self.ball.sprite.rect.centerx = self.pos_x
-
-    def draw(self, screen) -> None:
-        screen.blit(self.image, self.rect)
-        self.display.draw(screen)
         
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
@@ -579,7 +575,7 @@ class Table(object):
 
     def draw(self, screen) -> None:
         self.debuglauncher.draw(screen)
-        self.chargedlauncher.sprite.draw(screen)
+        self.chargedlauncher.draw(screen)
         self.walls.draw(screen)
         self.leftflipper.draw(screen)
         self.rightflipper.draw(screen)
