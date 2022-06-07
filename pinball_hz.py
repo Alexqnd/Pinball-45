@@ -154,95 +154,104 @@ class Ball(TableObject):
         self.rect.centery += round(self.pos[1])
 
 
+class TableObjectFixed(TableObject, ABC):
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name)
+        self.ball = ball
+
+    @abstractmethod
+    def control_ball(self):
+        pass
+
+
 #Walls of the table to keep the ball inside
-class Wall(TableObject, ABC):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+class Wall(TableObjectFixed, ABC):
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.preserved_energy = 0.9
 
     @abstractmethod
-    def reflect(self, ball) -> None:
-        ball.sprite.direction[0] = ball.sprite.direction[0] * self.preserved_energy
-        ball.sprite.direction[1] = ball.sprite.direction[1] * self.preserved_energy
+    def control_ball(self) -> None:
+        self.ball.sprite.direction[0] = self.ball.sprite.direction[0] * self.preserved_energy
+        self.ball.sprite.direction[1] = self.ball.sprite.direction[1] * self.preserved_energy
 
     @abstractmethod
-    def ball_out_wall(self, ball) -> None:
+    def ball_out_wall(self) -> None:
         pass
 
 
 #Vertical Wall
 class WallV(Wall):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+    def __init__(self, pos_x, pos_y, width, size, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name, ball)
         self.rotate_image(0)
 
-    def reflect(self, ball) -> None:
-        super(WallV, self).reflect(ball)
-        self.ball_out_wall(ball)
-        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(1, 0))
+    def control_ball(self) -> None:
+        super(WallV, self).control_ball()
+        self.ball_out_wall()
+        self.ball.sprite.direction = self.ball.sprite.direction.reflect(pygame.Vector2(1, 0))
 
-    def ball_out_wall(self, ball) -> None:
-        if ball.sprite.direction[0] < 0:
-            ball.sprite.rect.left = self.rect.right + 1
+    def ball_out_wall(self) -> None:
+        if self.ball.sprite.direction[0] < 0:
+            self.ball.sprite.rect.left = self.rect.right + 1
         else:
-            ball.sprite.rect.right = self.rect.left - 1
+            self.ball.sprite.rect.right = self.rect.left - 1
 
 
 #Horizontal Wall
 class WallH(Wall):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.rotate_image(90)
 
-    def reflect(self, ball) -> None:
-        super(WallH, self).reflect(ball)
-        self.ball_out_wall(ball)
-        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(0, 1))
+    def control_ball(self) -> None:
+        super(WallH, self).control_ball()
+        self.ball_out_wall()
+        self.ball.sprite.direction = self.ball.sprite.direction.reflect(pygame.Vector2(0, 1))
 
-    def ball_out_wall(self, ball) -> None:
-        if ball.sprite.direction[1] < 0:
-            ball.sprite.rect.top = self.rect.bottom + 1
+    def ball_out_wall(self) -> None:
+        if self.ball.sprite.direction[1] < 0:
+            self.ball.sprite.rect.top = self.rect.bottom + 1
         else:
-            ball.sprite.rect.bottom = self.rect.top - 1
+            self.ball.sprite.rect.bottom = self.rect.top - 1
 
 
 #Diagonal Wall top to bottom
 class WallDTB(Wall):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.rotate_image(45)
 
-    def reflect(self, ball) -> None:
-        super(WallDTB, self).reflect(ball)
-        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
-        self.ball_out_wall(ball)
+    def control_ball(self) -> None:
+        super(WallDTB, self).control_ball()
+        self.ball.sprite.direction = self.ball.sprite.direction.reflect(pygame.Vector2(-1, 1))
+        self.ball_out_wall()
 
-    def ball_out_wall(self, ball) -> None:
-        y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
-        ball.sprite.rect.centery += y
+    def ball_out_wall(self) -> None:
+        y = (self.ball.sprite.rect.centery - self.rect.centery) - (self.ball.sprite.rect.centerx - self.rect.centerx)
+        self.ball.sprite.rect.centery += y
 
 
 #Diagonal Wall bottom to top
 class WallDBT(Wall):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.rotate_image(315)
         self.rect_topright()
 
-    def reflect(self, ball) -> None:
-        super(WallDBT, self).reflect(ball)
-        ball.sprite.direction = ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
-        self.ball_out_wall(ball)
+    def control_ball(self) -> None:
+        super(WallDBT, self).control_ball()
+        self.ball.sprite.direction = self.ball.sprite.direction.reflect(pygame.Vector2(-1, -1))
+        self.ball_out_wall()
 
-    def ball_out_wall(self, ball) -> None:
-        y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
-        ball.sprite.rect.centery += y
+    def ball_out_wall(self) -> None:
+        y = (self.ball.sprite.rect.centery - self.rect.centery) + (self.ball.sprite.rect.centerx - self.rect.centerx)
+        self.ball.sprite.rect.centery += y
 
 
-class Flipper(TableObject, ABC):
+class Flipper(TableObjectFixed, ABC):
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height, image_name)
-        self.ball = ball
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.image_template = self.image
 
     def generate_rect(self) -> None:
@@ -258,7 +267,7 @@ class Flipper(TableObject, ABC):
         pass
 
     @abstractmethod
-    def move_ball_upward(self):
+    def control_ball(self):
         pass
 
 
@@ -273,7 +282,7 @@ class LeftFlipper(Flipper):
     def move_back(self) -> None:
         self.flip_image(False, False)
 
-    def move_ball_upward(self) -> None:
+    def control_ball(self) -> None:
         self.ball.sprite.direction[1] = -3000
     
 
@@ -289,35 +298,34 @@ class RightFlipper(Flipper):
     def move_back(self) -> None:
         self.flip_image(True, False)
 
-    def move_ball_upward(self) -> None:
+    def control_ball(self) -> None:
         self.ball.sprite.direction[1] = -3000
 
 
 class RailDTB(WallDTB):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
     
-    def connect_ball(self, ball) -> None:
-        y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
-        ball.sprite.rect.centerx += y
+    def control_ball(self) -> None:
+        y = (self.ball.sprite.rect.centery - self.rect.centery) - (self.ball.sprite.rect.centerx - self.rect.centerx)
+        self.ball.sprite.rect.centerx += y
 
 
 class RailDBT(WallDBT):
-    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
-        super().__init__(pos_x, pos_y, width, size, image_name)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
 
-    def connect_ball(self, ball) -> None:
-        y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
-        ball.sprite.rect.centerx -= y
+    def control_ball(self) -> None:
+        y = (self.ball.sprite.rect.centery - self.rect.centery) + (self.ball.sprite.rect.centerx - self.rect.centerx)
+        self.ball.sprite.rect.centerx -= y
 
 
 #Launches the ball where it is in a given angle with a given force
-class Launcher(TableObject):
+class Launcher(TableObjectFixed, ABC):
     def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height, image_name)
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.angle = angle
         self.force = force
-        self.ball = ball
 
     def launch_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
@@ -330,6 +338,10 @@ class Launcher(TableObject):
         self.rotate_image(self.angle)
         self.rect_center()
 
+    @abstractmethod
+    def control_ball(self):
+        pass
+
 
 #Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
@@ -339,7 +351,7 @@ class ChargedLauncher(Launcher):
         self.charging = False
         self.charge_speed = 1000
         self.force = 0
-        self.holding = False
+        self.controlling = False
         self.ball_number = 0
         self.display = Display(self.pos_x, self.pos_y - 100, self.ball_number)
 
@@ -362,7 +374,7 @@ class ChargedLauncher(Launcher):
             Settings.gameover = True
             self.display.update("G")
 
-    def hold_ball(self) -> None:
+    def control_ball(self) -> None:
         self.ball.sprite.direction[1] = 0
         self.ball.sprite.rect.centerx = self.pos_x
         self.ball.sprite.rect.bottom = self.pos_y
@@ -371,7 +383,7 @@ class ChargedLauncher(Launcher):
         self.charging = True
 
     def launch_ball(self) -> None:
-        if self.holding:
+        if self.controlling:
             super().launch_ball()
             self.position_ball_launch()
         self.charging = False
@@ -398,6 +410,9 @@ class DebugLauncher(Launcher):
         if self.grit > 1:
             self.grit -= 1
         print(self.grit, "grit")
+
+    def control_ball(self):
+        pass
 
     def launch_ball(self) -> None:
         super().launch_ball()
@@ -472,21 +487,21 @@ class Table(object):
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
     def launchlane(self) -> None:
-        self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, 5, self.height - 140, "wall.png"))
-        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 5, 20, "wall.png"))
+        self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, 5, self.height - 140, "wall.png", self.ball))
+        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 5, 20, "wall.png", self.ball))
 
     def exitlanes(self) -> None:
-        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 5, 70, "wall.png"))
-        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 5, 70, "wall.png"))
+        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 5, 70, "wall.png", self.ball))
+        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 5, 70, "wall.png", self.ball))
 
     def borders(self) -> None:
-        self.walls.add(WallH(self.l_guide, self.t_guide, 5, self.width, "wall.png"))
-        self.walls.add(WallV(self.l_guide, self.t_guide, 5, self.height, "wall.png"))
-        self.walls.add(WallV(self.r_guide, self.t_guide, 5, self.height, "wall.png"))
-        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 5, 100, "wall.png"))
-        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 5, 100, "wall.png"))
-        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, 1, self.width / 2, "wall.png"))
-        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, 1, self.width / 2, "wall.png"))
+        self.walls.add(WallH(self.l_guide, self.t_guide, 5, self.width, "wall.png", self.ball))
+        self.walls.add(WallV(self.l_guide, self.t_guide, 5, self.height, "wall.png", self.ball))
+        self.walls.add(WallV(self.r_guide, self.t_guide, 5, self.height, "wall.png", self.ball))
+        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 5, 100, "wall.png", self.ball))
+        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 5, 100, "wall.png", self.ball))
+        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, 1, self.width / 2, "wall.png", self.ball))
+        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, 1, self.width / 2, "wall.png", self.ball))
 
     def flippers(self) -> None:
         self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, "flipper.png", self.ball))
@@ -498,16 +513,16 @@ class Table(object):
 
     def assign_collision(self) -> None:
         if self.collision(self.chargedlauncher):
-            self.chargedlauncher.sprite.hold_ball()
-            self.chargedlauncher.sprite.holding = True
+            self.chargedlauncher.sprite.control_ball()
+            self.chargedlauncher.sprite.controlling = True
         else:
-            self.chargedlauncher.sprite.holding = False
+            self.chargedlauncher.sprite.controlling = False
 
         for wall in self.collision(self.walls):
-            wall.reflect(self.ball)
+            wall.control_ball()
 
         for rail in self.collision(self.rails):
-            rail.connect_ball(self.ball)
+            rail.control_ball()
 
     def out_of_table(self):
         if self.ball.sprite.rect.top > self.b_guide:
@@ -518,11 +533,11 @@ class Table(object):
         if event.type == KEYDOWN:
             if event.key == K_a:
                 if pygame.sprite.groupcollide(self.leftflipper, self.ball, False, False, pygame.sprite.collide_mask):
-                    self.leftflipper.sprite.move_ball_upward()
+                    self.leftflipper.sprite.control_ball()
                 self.leftflipper.sprite.move()
             elif event.key == K_d:
                 if pygame.sprite.groupcollide(self.rightflipper, self.ball, False, False, pygame.sprite.collide_mask):
-                    self.rightflipper.sprite.move_ball_upward()
+                    self.rightflipper.sprite.control_ball()
                 self.rightflipper.sprite.move()
             elif event.key == K_SPACE:
                 self.chargedlauncher.sprite.charge()
