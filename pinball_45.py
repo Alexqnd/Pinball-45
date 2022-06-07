@@ -356,7 +356,7 @@ class Launcher(TableObjectFixed, ABC):
 
 #Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
-    def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
+    def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball, display) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, angle, force, ball)
         self.generate_rect()
         self.launch_sound = self.load_sound("launch.wav")
@@ -367,7 +367,9 @@ class ChargedLauncher(Launcher):
         self.controlling = False
         self.ball_number = 0
         self.new_game_sound.play()
-        self.display = Display(self.pos_x, self.pos_y - 100, self.ball_number)
+        self.display = display
+        self.display.update("Hold Space and release")
+        self.display_small = Display(self.pos_x, self.pos_y - 100, self.ball_number)
 
     def update(self) -> None:
         if self.charging and self.force <= 3000:
@@ -376,18 +378,19 @@ class ChargedLauncher(Launcher):
     def reset(self) -> None:
         self.ball_number = 0
         self.new_game_sound.play()
+        self.display.update("Hold Space and release")
         self.place_ball()
 
     def place_ball(self) -> None:
         if self.ball_number < 3:
             self.ball_number += 1 
-            self.display.update(self.ball_number)
+            self.display_small.update(self.ball_number)
             self.ball.sprite.direction[0] = 0
             self.ball.sprite.direction[1] = 0
             self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 300)
         else:
             Settings.gameover = True
-            self.display.update("G")
+            self.display.update("Gameover Press R to restart")
 
     def control_ball(self) -> None:
         self.ball.sprite.direction[1] = 0
@@ -399,6 +402,7 @@ class ChargedLauncher(Launcher):
 
     def launch_ball(self) -> None:
         self.launch_sound.play()
+        self.display.update("")
         if self.controlling:
             super().launch_ball()
             self.position_ball_launch()
@@ -492,7 +496,8 @@ class Table(object):
 
     def objects(self) -> None:
         self.ball = pygame.sprite.GroupSingle(Ball(self.r_guide - 17, self.t_guide + 50, 25, 25, "ball.png"))
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 25, 30, "chargedlauncher.png", 0, 2000, self.ball))
+        self.displays()
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 25, 30, "chargedlauncher.png", 0, 2000, self.ball, self.chargedlauncher_display))
         self.chargedlauncher.sprite.place_ball()
         self.walls = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
@@ -501,9 +506,12 @@ class Table(object):
         self.borders()
         self.flippers()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, "debuglauncher.png", 0, 600, self.ball))
+
+    def displays(self) -> None:
+        self.chargedlauncher_display = Display(self.l_guide + 100, self.t_guide * 2 + 50, "Error")
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
-    def load_sound(self, sound_name):
+    def load_sound(self, sound_name) -> None:
         self.sound = pygame.mixer.Sound((Settings.soundpath(sound_name)))
 
     def launchlane(self) -> None:
@@ -607,6 +615,7 @@ class Table(object):
         self.debuglauncher.draw(screen)
         self.chargedlauncher.draw(screen)
         self.chargedlauncher.sprite.display.draw(screen)
+        self.chargedlauncher.sprite.display_small.draw(screen)
         self.walls.draw(screen)
         self.leftflipper.draw(screen)
         self.rightflipper.draw(screen)
