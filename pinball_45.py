@@ -13,6 +13,7 @@ class Settings(object):
     path = {}
     path['file'] = os.path.dirname(os.path.abspath(__file__))
     path['image'] = os.path.join(path['file'], "images")
+    path['sound'] = os.path.join(path['file'], 'sounds')
     gameover = False
 
     @staticmethod
@@ -22,6 +23,9 @@ class Settings(object):
     @staticmethod
     def imagepath(name):
         return os.path.join(Settings.path['image'], name)
+
+    def soundpath(name):
+        return os.path.join(Settings.path['sound'], name)
 
 
 #Displaying Text
@@ -105,6 +109,7 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.width = width
         self.height = height
         self.image_name = image_name
+        self.sound = []
         self.load_image()
         self.scale_image()
         self.rect = self.image.get_rect()
@@ -135,6 +140,9 @@ class TableObject(pygame.sprite.Sprite, ABC):
 
     def rect_topright(self) -> None:
         self.rect.topright = (self.pos_x, self.pos_y)
+
+    def load_sound(self, sound_name):
+        self.sound = pygame.mixer.Sound((Settings.soundpath(sound_name)))
 
 
 #Ball on the Pinball-table
@@ -466,6 +474,7 @@ class Table(object):
         self.b_guide = self.height + self.margin_t
         self.l_guide = self.margin_lr
         self.cx_guide = self.margin_lr + self.width / 2
+        self.load_sound("fall.wav")
         self.objects()
 
     def restart(self) -> None:
@@ -485,6 +494,9 @@ class Table(object):
         self.flippers()
         self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, "debuglauncher.png", 0, 600, self.ball))
         self.score = Score(self.cx_guide, self.t_guide * 2)
+
+    def load_sound(self, sound_name):
+        self.sound = pygame.mixer.Sound((Settings.soundpath(sound_name)))
 
     def launchlane(self) -> None:
         self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, 5, self.height - 140, "wall.png", self.ball))
@@ -526,6 +538,7 @@ class Table(object):
 
     def out_of_table(self):
         if self.ball.sprite.rect.top > self.b_guide:
+            self.sound.play()
             self.score.add_points(10000)
             self.chargedlauncher.sprite.place_ball()
 

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE lmms-project>
+<lmms-project type="instrumenttracksettings" version="1.0" creatorversion="1.2.1" creator="LMMS">
+  <head/>
+  <instrumenttracksettings type="0" muted="0" name="fall" solo="0">
+    <instrumenttrack pitch="0" basenote="57" usemasterpitch="1" pan="0" fxch="0" vol="100" pitchrange="12">
+      <instrument name="sfxr">
+        <sfxr changeAmt="0" hpFilCutSweep="0" vibDepth="0" waveForm="1" phaserOffset="0" slide="-0.34422" lpFilCut="1" hpFilCut="0.14277" lpFilReso="0" sqrDuty="0.2322" repeatSpeed="0" dSlide="0" sqrSweep="0.2" minFreq="0.69829" changeSpeed="0" phaserSweep="0" hold="0.2039" vibSpeed="0" lpFilCutSweep="0" att="0" dec="0.13572" version="1" sus="0" startFreq="0.93975"/>
+      </instrument>
+      <eldata fcut="14000" fres="0.5" fwet="0" ftype="0">
+        <elvol amt="0" x100="0" pdel="0" lamt="0" lpdel="0" lspd_syncmode="0" rel="0.1" lshp="0" userwavefile="" hold="0.5" lspd="0.1" ctlenvamt="0" lspd_denominator="4" lspd_numerator="4" att="0" dec="0.5" sustain="0.5" latt="0"/>
+        <elcut amt="0" x100="0" pdel="0" lamt="0" lpdel="0" lspd_syncmode="0" rel="0.1" lshp="0" userwavefile="" hold="0.5" lspd="0.1" ctlenvamt="0" lspd_denominator="4" lspd_numerator="4" att="0" dec="0.5" sustain="0.5" latt="0"/>
+        <elres amt="0" x100="0" pdel="0" lamt="0" lpdel="0" lspd_syncmode="0" rel="0.1" lshp="0" userwavefile="" hold="0.5" lspd="0.1" ctlenvamt="0" lspd_denominator="4" lspd_numerator="4" att="0" dec="0.5" sustain="0.5" latt="0"/>
+      </eldata>
+      <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
+      <arpeggiator arp-enabled="0" arp="0" arpmode="0" arpgate="100" arpskip="0" arptime_syncmode="0" arptime="200" arprange="1" arpcycle="0" arpmiss="0" arpdir="0" arptime_numerator="4" arptime_denominator="4"/>
+      <midiport readable="0" writable="0" inputcontroller="0" outputprogram="1" inputchannel="0" outputcontroller="0" outputchannel="1" basevelocity="63" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1"/>
+      <fxchain enabled="0" numofeffects="0"/>
+    </instrumenttrack>
+  </instrumenttracksettings>
+</lmms-project>
