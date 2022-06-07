@@ -513,7 +513,9 @@ class Table(object):
         self.exitlanes()
         self.borders()
         self.flippers()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, "debuglauncher.png", 0, 600, self.ball))
+
+        #Uncomment the next line and line 626 for testing physics
+        #self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, "debuglauncher.png", 0, 600, self.ball))
 
     def displays(self) -> None:
         self.chargedlauncher_display = Display(self.l_guide + 100, self.t_guide * 2 + 50, "Error")
@@ -621,7 +623,7 @@ class Table(object):
         self.out_of_table()
 
     def draw(self, screen) -> None:
-        self.debuglauncher.draw(screen)
+        #self.debuglauncher.draw(screen)
         self.chargedlauncher.draw(screen)
         self.chargedlauncher.sprite.display.draw(screen)
         self.chargedlauncher.sprite.display_small.draw(screen)
