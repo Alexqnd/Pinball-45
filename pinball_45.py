@@ -438,14 +438,14 @@ class DebugLauncher(Launcher):
         self.angle += 22.5 / self.grit
         if self.angle >= 360:
             self.angle -= 360
-        self.rotate_image()
+        self.rotate_image(self.angle)
         self.rect_center()
     
     def rotate_right(self) -> None:
         self.angle -= 22.5 / self.grit
         if self.angle < 0:
             self.angle += 360
-        self.rotate_image()
+        self.rotate_image(self.angle)
         self.rect_center()
 
     def increase_force(self) -> None:
