@@ -152,7 +152,7 @@ class Ball(TableObject):
         self.rect_center()
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
-        self.gravity = 981
+        self.gravity = 281
 
     def update(self) -> None:
         self.direction[1] = self.direction[1] + self.gravity * Settings.deltatime
@@ -297,7 +297,7 @@ class LeftFlipper(Flipper):
             self.ball.sprite.direction[0] += 100
         else:
             self.ball.sprite.direction[0] -= 100
-        self.ball.sprite.direction[1] = -2000
+        self.ball.sprite.direction[1] = -800
     
 
 class RightFlipper(Flipper):
@@ -318,7 +318,7 @@ class RightFlipper(Flipper):
             self.ball.sprite.direction[0] -= 100
         else:
             self.ball.sprite.direction[0] += 100
-        self.ball.sprite.direction[1] = -3000
+        self.ball.sprite.direction[1] = -800
 
 
 class RailDTB(WallDTB):
