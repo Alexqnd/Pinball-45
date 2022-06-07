@@ -359,6 +359,7 @@ class ChargedLauncher(Launcher):
     def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, angle, force, ball)
         self.generate_rect()
+        self.load_sound("launch.wav")
         self.charging = False
         self.charge_speed = 1000
         self.force = 0
@@ -394,6 +395,7 @@ class ChargedLauncher(Launcher):
         self.charging = True
 
     def launch_ball(self) -> None:
+        self.sound.play()
         if self.controlling:
             super().launch_ball()
             self.position_ball_launch()
