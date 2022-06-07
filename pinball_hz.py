@@ -105,14 +105,15 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.width = width
         self.height = height
 
-    def load_image(self, image_name = str):
-        return pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
+    def load_image(self, image_name = str) -> None:
+        self.image = pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
 
-    def scale_image(self, width, height):
-        return pygame.transform.scale(self.image, (width, height)).convert_alpha()
+    def scale_image(self, width, height) -> None:
+        self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
 
     def rotate_image(self, width, size, angle):
-        self.image_template = self.scale_image(width, size)
+        self.scale_image(width, size)
+        self.image_template = self.image
         self.image = pygame.transform.rotate(self.image_template, angle)
 
     def rect_center(self):
@@ -132,8 +133,8 @@ class TableObject(pygame.sprite.Sprite, ABC):
 class Ball(TableObject):
     def __init__(self, pos_x, pos_y, width, height) -> None:
         super().__init__(pos_x, pos_y, width, height)
-        self.image = self.load_image("ball.png")
-        self.image = self.scale_image(self.width, self.height)
+        self.load_image("ball.png")
+        self.scale_image(width, height)
         self.rect_center()
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
@@ -152,7 +153,7 @@ class Wall(TableObject, ABC):
     def __init__(self, pos_x, pos_y, width, size) -> None:
         super().__init__(pos_x, pos_y, width, size)
         self.preserved_energy = 0.9
-        self.image = self.load_image("wall.png")
+        self.load_image("wall.png")
 
     def rect_from_image(self, angle) -> None:
         self.rotate_image(self.width, self.height, angle)
@@ -244,8 +245,8 @@ class Flipper(TableObject, ABC):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
         super().__init__(pos_x, pos_y, width, height)
         self.ball = ball
-        self.image_template = self.load_image("flipper.png")
-        self.image = self.image_template
+        self.load_image("flipper.png")
+        self.image_template = self.image
 
     def generate_rect(self) -> None:
         self.rect = self.image.get_rect()
@@ -347,7 +348,7 @@ class Launcher(TableObject):
 class ChargedLauncher(Launcher):
     def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, angle, force, ball)
-        self.image = self.load_image("chargedlauncher.png")
+        self.load_image("chargedlauncher.png")
         self.generate_rect()
         self.charging = False
         self.charge_speed = 1000
@@ -403,7 +404,7 @@ class ChargedLauncher(Launcher):
 class DebugLauncher(Launcher):
     def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, angle, force, ball)
-        self.image = self.load_image("debuglauncher.png")
+        self.load_image("debuglauncher.png")
         self.grit = 1
         self.generate_rect()
 
