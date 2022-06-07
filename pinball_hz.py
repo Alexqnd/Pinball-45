@@ -108,6 +108,7 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.load_image()
         self.scale_image()
         self.rect = self.image.get_rect()
+        self.rect_topleft()
 
     def load_image(self) -> None:
         self.image = pygame.image.load(Settings.imagepath(self.image_name)).convert_alpha()
@@ -119,6 +120,7 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.image_template = self.image
         self.image = pygame.transform.rotate(self.image_template, angle)
         self.rect = self.image.get_rect()
+        self.rect_topleft()
 
     def rect_center(self) -> None:
         self.rect.center = (self.pos_x, self.pos_y)
@@ -153,10 +155,6 @@ class Wall(TableObject, ABC):
         super().__init__(pos_x, pos_y, width, size, image_name)
         self.preserved_energy = 0.9
 
-    def rect_from_image(self, angle) -> None:
-        self.rotate_image(angle)
-        self.rect_topleft()
-
     @abstractmethod
     def reflect(self, ball) -> None:
         ball.sprite.direction[0] = ball.sprite.direction[0] * self.preserved_energy
@@ -171,7 +169,7 @@ class Wall(TableObject, ABC):
 class WallV(Wall):
     def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
         super().__init__(pos_x, pos_y, width, size, image_name)
-        self.rect_from_image(0)
+        self.rotate_image(0)
 
     def reflect(self, ball) -> None:
         super(WallV, self).reflect(ball)
@@ -189,7 +187,7 @@ class WallV(Wall):
 class WallH(Wall):
     def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
         super().__init__(pos_x, pos_y, width, size, image_name)
-        self.rect_from_image(90)
+        self.rotate_image(90)
 
     def reflect(self, ball) -> None:
         super(WallH, self).reflect(ball)
@@ -207,7 +205,7 @@ class WallH(Wall):
 class WallDTB(Wall):
     def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
         super().__init__(pos_x, pos_y, width, size, image_name)
-        self.rect_from_image(45)
+        self.rotate_image(45)
 
     def reflect(self, ball) -> None:
         super(WallDTB, self).reflect(ball)
@@ -223,7 +221,8 @@ class WallDTB(Wall):
 class WallDBT(Wall):
     def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
         super().__init__(pos_x, pos_y, width, size, image_name)
-        self.rect_from_image(315)
+        self.rotate_image(315)
+        self.rect_topright()
 
     def reflect(self, ball) -> None:
         super(WallDBT, self).reflect(ball)
@@ -233,10 +232,6 @@ class WallDBT(Wall):
     def ball_out_wall(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
         ball.sprite.rect.centery += y
-
-    def rect_from_image(self, angle) -> None:
-        self.rotate_image(angle)
-        self.rect_topright()
 
 
 class Flipper(TableObject, ABC):
