@@ -124,6 +124,9 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.mask = pygame.mask.from_surface(self.image)
         self.rect_topleft()
 
+    def flip_image(self, on_x, on_y) -> None:
+        self.image = pygame.transform.flip(self.image_template, on_x, on_y)
+
     def rect_center(self) -> None:
         self.rect.center = (self.pos_x, self.pos_y)
 
@@ -245,9 +248,6 @@ class Flipper(TableObject, ABC):
     def generate_rect(self) -> None:
         self.rect.left = self.pos_x
         self.rect.centery = self.pos_y
-
-    def flip_image(self, on_x, on_y) -> None:
-        self.image = pygame.transform.flip(self.image_template, on_x, on_y)
 
     @abstractmethod
     def move(self) -> None:
