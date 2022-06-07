@@ -540,8 +540,8 @@ class Table(object):
         self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, 1, self.width / 2, "wall.png", self.ball))
 
     def flippers(self) -> None:
-        self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, "flipper.png", self.ball))
-        self.rightflipper = pygame.sprite.GroupSingle(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, "flipper.png", self.ball))
+        self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 150, 150, "flipper.png", self.ball))
+        self.rightflipper = pygame.sprite.GroupSingle(RightFlipper(self.r_guide - 276, self.b_guide - 148, 150, 150, "flipper.png", self.ball))
 
     #Collision between ball and another group
     def collision(self, collidegroup):
