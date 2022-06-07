@@ -26,10 +26,12 @@ class Settings(object):
 
 #Every object on the table
 class TableObject(pygame.sprite.Sprite, ABC):
-    def __init__(self, pos_x, pos_y) -> None:
+    def __init__(self, pos_x, pos_y, width, height) -> None:
         super().__init__()
         self.pos_x = pos_x
         self.pos_y = pos_y
+        self.width = width
+        self.height = height
 
     def load_image(self, image_name = str):
         return pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
@@ -53,14 +55,11 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.rect = self.image.get_rect()
         self.rect.topright = (self.pos_x, self.pos_y)
 
+
 #Ball on the Pinball-table
 class Ball(TableObject):
-    def __init__(self, pos_x, pos_y) -> None:
-        super().__init__(pos_x, pos_y)
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.width = 25
-        self.height = 25
+    def __init__(self, pos_x, pos_y, width, height) -> None:
+        super().__init__(pos_x, pos_y, width, height)
         self.image = self.load_image("ball.png")
         self.image = self.scale_image(self.width, self.height)
         self.rect_center()
@@ -79,14 +78,12 @@ class Ball(TableObject):
 #Walls of the table to keep the ball inside
 class Wall(TableObject, ABC):
     def __init__(self, pos_x, pos_y, width, size) -> None:
-        super().__init__(pos_x, pos_y)
-        self.width = width
-        self.size = size
+        super().__init__(pos_x, pos_y, width, size)
         self.preserved_energy = 0.9
         self.image = self.load_image("wall.png")
 
     def rect_from_image(self, angle) -> None:
-        self.rotate_image(self.width, self.size, angle)
+        self.rotate_image(self.width, self.height, angle)
         self.rect_topleft()
 
     @abstractmethod
@@ -167,17 +164,13 @@ class WallDBT(Wall):
         ball.sprite.rect.centery += y
 
     def rect_from_image(self, angle) -> None:
-        self.rotate_image(self.width, self.size, angle)
+        self.rotate_image(self.width, self.height, angle)
         self.rect_topright()
 
 
 class Flipper(TableObject, ABC):
     def __init__(self, pos_x, pos_y, width, height, ball) -> None:
-        super().__init__(pos_x, pos_y)
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.width = width
-        self.height = height
+        super().__init__(pos_x, pos_y, width, height)
         self.ball = ball
         self.image_template = self.load_image("flipper.png")
         self.image = self.image_template
@@ -240,7 +233,6 @@ class RightFlipper(Flipper):
         self.ball.sprite.direction[1] = -3000
 
 
-
 class RailDTB(WallDTB):
     def __init__(self, x, y, width, size) -> None:
         super().__init__(x, y, width, size)
@@ -282,13 +274,11 @@ class Timer(object):
 
 #Launches the ball where it is in a given angle with a given force
 class Launcher(TableObject):
-    def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y)
+    def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height)
         self.angle = angle
         self.force = force
         self.ball = ball
-        self.width = 25
-        self.height = 25
 
     def launch_ball(self) -> None:
         self.ball.sprite.direction[0] = - self.force * math.sin(math.radians(self.angle))
@@ -304,8 +294,8 @@ class Launcher(TableObject):
 
 #Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
-    def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y, angle, force, ball)
+    def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, angle, force, ball)
         self.image = self.load_image("chargedlauncher.png")
         self.generate_rect()
         self.charging = False
@@ -327,6 +317,8 @@ class ChargedLauncher(Launcher):
         if self.ball_number < 3:
             self.ball_number += 1 
             self.display.update(self.ball_number)
+            self.ball.sprite.direction[0] = 0
+            self.ball.sprite.direction[1] = 0
             self.ball.sprite.rect.center = (self.pos_x, self.pos_y - 300)
         else:
             Settings.gameover = True
@@ -358,8 +350,8 @@ class ChargedLauncher(Launcher):
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
-    def __init__(self, pos_x, pos_y, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y, angle, force, ball)
+    def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, angle, force, ball)
         self.image = self.load_image("debuglauncher.png")
         self.grit = 1
         self.generate_rect()
@@ -416,9 +408,11 @@ class DebugLauncher(Launcher):
 
 
 #Displaying Text
-class Display(TableObject):
+class Display(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y, text) -> None:
-        super().__init__(pos_x, pos_y)
+        super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.fontsize = 24
         self.fontfamily = pygame.font.get_default_font()
         self.fontcolor = [255, 255, 255]
@@ -445,8 +439,10 @@ class Display(TableObject):
         screen.blit(self.rendered_text, self.rect)
 
 
-class Score(TableObject):
+class Score(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y) -> None:
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.points = 0
         self.scoredisplay = Display(pos_x, pos_y, self.points)
 
@@ -491,8 +487,8 @@ class Table(object):
         self.chargedlauncher.sprite.reset()
 
     def objects(self) -> None:
-        self.ball = pygame.sprite.GroupSingle(Ball(self.r_guide - 17, self.t_guide + 50))
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 0, 2000, self.ball))
+        self.ball = pygame.sprite.GroupSingle(Ball(self.r_guide - 17, self.t_guide + 50, 25, 25))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 25, 30, 0, 2000, self.ball))
         self.chargedlauncher.sprite.place_ball()
         self.walls = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
@@ -500,7 +496,7 @@ class Table(object):
         self.exitlanes()
         self.borders()
         self.flippers()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 0, 600, self.ball))
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, 0, 600, self.ball))
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
     def launchlane(self) -> None:
