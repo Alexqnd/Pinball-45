@@ -142,7 +142,7 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.rect.topright = (self.pos_x, self.pos_y)
 
     def load_sound(self, sound_name):
-        self.sound = pygame.mixer.Sound((Settings.soundpath(sound_name)))
+        return pygame.mixer.Sound((Settings.soundpath(sound_name)))
 
 
 #Ball on the Pinball-table
@@ -261,7 +261,7 @@ class Flipper(TableObjectFixed, ABC):
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.image_template = self.image
-        self.load_sound("flipper.wav")
+        self.sound = self.load_sound("flipper.wav")
 
     def generate_rect(self) -> None:
         self.rect.left = self.pos_x
@@ -359,12 +359,14 @@ class ChargedLauncher(Launcher):
     def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, angle, force, ball)
         self.generate_rect()
-        self.load_sound("launch.wav")
+        self.launch_sound = self.load_sound("launch.wav")
+        self.new_game_sound = self.load_sound("new_game.wav")
         self.charging = False
         self.charge_speed = 1000
         self.force = 0
         self.controlling = False
         self.ball_number = 0
+        self.new_game_sound.play()
         self.display = Display(self.pos_x, self.pos_y - 100, self.ball_number)
 
     def update(self) -> None:
@@ -373,6 +375,7 @@ class ChargedLauncher(Launcher):
 
     def reset(self) -> None:
         self.ball_number = 0
+        self.new_game_sound.play()
         self.place_ball()
 
     def place_ball(self) -> None:
@@ -395,7 +398,7 @@ class ChargedLauncher(Launcher):
         self.charging = True
 
     def launch_ball(self) -> None:
-        self.sound.play()
+        self.launch_sound.play()
         if self.controlling:
             super().launch_ball()
             self.position_ball_launch()
