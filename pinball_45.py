@@ -606,6 +606,7 @@ class Table(object):
     def draw(self, screen) -> None:
         self.debuglauncher.draw(screen)
         self.chargedlauncher.draw(screen)
+        self.chargedlauncher.sprite.display.draw(screen)
         self.walls.draw(screen)
         self.leftflipper.draw(screen)
         self.rightflipper.draw(screen)
