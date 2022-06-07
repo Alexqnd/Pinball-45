@@ -24,6 +24,78 @@ class Settings(object):
         return os.path.join(Settings.path['image'], name)
 
 
+#Displaying Text
+class Display(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y, text) -> None:
+        super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.fontsize = 24
+        self.fontfamily = pygame.font.get_default_font()
+        self.fontcolor = [255, 255, 255]
+        self.font = pygame.font.Font(self.fontfamily, self.fontsize)
+        self.render_text(text)
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.generate_rect()
+
+    def render_text(self, text) -> None:
+        if not isinstance(text, str):
+            text = str(text)
+        self.rendered_text = self.font.render(text, True, self.fontcolor)
+
+    def generate_rect(self) -> None:
+        self.rect = self.rendered_text.get_rect()
+        self.rect.centerx = self.pos_x
+        self.rect.centery = self.pos_y
+
+    def update(self, text) -> None:
+        self.render_text(text)
+
+    def draw(self, screen) -> None:
+        screen.blit(self.rendered_text, self.rect)
+
+
+class Score(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y) -> None:
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.points = 0
+        self.scoredisplay = Display(pos_x, pos_y, self.points)
+
+    def add_points(self, points) -> None:
+        self.points += points
+        self.scoredisplay.update(self.points)
+
+    def reset(self) -> None:
+        self.points = 0
+        self.scoredisplay.update(self.points)
+
+    def draw(self, screen) -> None:
+        self.scoredisplay.draw(screen)
+
+
+#Returns if a certain time has passed
+class Timer(object):
+    def __init__(self, duration, with_start = True) -> None:
+        self.duration = duration
+        if with_start:
+            self.next = pygame.time.get_ticks()
+        else:
+            self.next = pygame.time.get_ticks() + self.duration
+
+    def is_next_stop_reached(self):
+        if pygame.time.get_ticks() > self.next:
+            self.next = pygame.time.get_ticks() + self.duration
+            return True
+        return False
+
+    def change_duration(self, delta=10) -> None:
+        self.duration += delta
+        if self.duration < 0:
+            self.duration = 0
+
+
 #Every object on the table
 class TableObject(pygame.sprite.Sprite, ABC):
     def __init__(self, pos_x, pos_y, width, height) -> None:
@@ -251,27 +323,6 @@ class RailDBT(WallDBT):
         ball.sprite.rect.centerx -= y
 
 
-#Returns if a certain time has passed
-class Timer(object):
-    def __init__(self, duration, with_start = True) -> None:
-        self.duration = duration
-        if with_start:
-            self.next = pygame.time.get_ticks()
-        else:
-            self.next = pygame.time.get_ticks() + self.duration
-
-    def is_next_stop_reached(self):
-        if pygame.time.get_ticks() > self.next:
-            self.next = pygame.time.get_ticks() + self.duration
-            return True
-        return False
-
-    def change_duration(self, delta=10) -> None:
-        self.duration += delta
-        if self.duration < 0:
-            self.duration = 0
-
-
 #Launches the ball where it is in a given angle with a given force
 class Launcher(TableObject):
     def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
@@ -405,67 +456,6 @@ class DebugLauncher(Launcher):
     def move_left(self) -> None:
         self.pos_x -= 20 / self.grit
         self.rect.center = (self.pos_x, self.pos_y)
-
-
-#Displaying Text
-class Display(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, text) -> None:
-        super().__init__()
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.fontsize = 24
-        self.fontfamily = pygame.font.get_default_font()
-        self.fontcolor = [255, 255, 255]
-        self.font = pygame.font.Font(self.fontfamily, self.fontsize)
-        self.render_text(text)
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.generate_rect()
-
-    def render_text(self, text) -> None:
-        if not isinstance(text, str):
-            text = str(text)
-        self.rendered_text = self.font.render(text, True, self.fontcolor)
-
-    def generate_rect(self) -> None:
-        self.rect = self.rendered_text.get_rect()
-        self.rect.centerx = self.pos_x
-        self.rect.centery = self.pos_y
-
-    def update(self, text) -> None:
-        self.render_text(text)
-
-    def draw(self, screen) -> None:
-        screen.blit(self.rendered_text, self.rect)
-
-
-class Score(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y) -> None:
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.points = 0
-        self.scoredisplay = Display(pos_x, pos_y, self.points)
-
-    def add_points(self, points) -> None:
-        self.points += points
-        self.scoredisplay.update(self.points)
-
-    def reset(self) -> None:
-        self.points = 0
-        self.scoredisplay.update(self.points)
-
-    def draw(self, screen) -> None:
-        self.scoredisplay.draw(screen)
-
-
-class Background(object):
-    def __init__(self) -> None:
-        super().__init__()
-        self.image = pygame.image.load(os.path.join(Settings.imagepath("table.png")))
-        self.image = pygame.transform.scale(self.image, (Settings.dim())).convert()
-    
-    def draw(self, screen) -> None:
-        screen.blit(self.image, (0, 0))
 
 
 class Table(object):
@@ -604,6 +594,16 @@ class Table(object):
         self.rails.draw(screen)
         self.score.draw(screen)
         self.ball.draw(screen)
+
+
+class Background(object):
+    def __init__(self) -> None:
+        super().__init__()
+        self.image = pygame.image.load(os.path.join(Settings.imagepath("table.png")))
+        self.image = pygame.transform.scale(self.image, (Settings.dim())).convert()
+    
+    def draw(self, screen) -> None:
+        screen.blit(self.image, (0, 0))
 
 
 #main class    
