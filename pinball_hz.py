@@ -78,10 +78,10 @@ class Ball(TableObject):
 
 #Walls of the table to keep the ball inside
 class Wall(TableObject, ABC):
-    def __init__(self, pos_x, pos_y, size) -> None:
+    def __init__(self, pos_x, pos_y, width, size) -> None:
         super().__init__(pos_x, pos_y)
+        self.width = width
         self.size = size
-        self.width = 5
         self.preserved_energy = 0.9
         self.image = self.load_image("wall.png")
 
@@ -101,8 +101,8 @@ class Wall(TableObject, ABC):
 
 #Vertical Wall
 class WallV(Wall):
-    def __init__(self, pos_x, pos_y, size) -> None:
-        super().__init__(pos_x, pos_y, size)
+    def __init__(self, pos_x, pos_y, width, size) -> None:
+        super().__init__(pos_x, pos_y, width, size)
         self.rect_from_image(0)
 
     def reflect(self, ball) -> None:
@@ -119,8 +119,8 @@ class WallV(Wall):
 
 #Horizontal Wall
 class WallH(Wall):
-    def __init__(self, pos_x, pos_y, size) -> None:
-        super().__init__(pos_x, pos_y, size)
+    def __init__(self, pos_x, pos_y, width, size) -> None:
+        super().__init__(pos_x, pos_y, width, size)
         self.rect_from_image(90)
 
     def reflect(self, ball) -> None:
@@ -137,8 +137,8 @@ class WallH(Wall):
 
 #Diagonal Wall top to bottom
 class WallDTB(Wall):
-    def __init__(self, pos_x, pos_y, size) -> None:    
-        super().__init__(pos_x, pos_y, size)
+    def __init__(self, pos_x, pos_y, width, size) -> None:    
+        super().__init__(pos_x, pos_y, width, size)
         self.rect_from_image(45)
 
     def reflect(self, ball) -> None:
@@ -153,8 +153,8 @@ class WallDTB(Wall):
 
 #Diagonal Wall bottom to top
 class WallDBT(Wall):
-    def __init__(self, pos_x, pos_y, size) -> None:    
-        super().__init__(pos_x, pos_y, size)
+    def __init__(self, pos_x, pos_y, width, size) -> None:    
+        super().__init__(pos_x, pos_y, width, size)
         self.rect_from_image(315)
 
     def reflect(self, ball) -> None:
@@ -242,10 +242,8 @@ class RightFlipper(Flipper):
 
 
 class RailDTB(WallDTB):
-    def __init__(self, x, y, size) -> None:
-        super().__init__(x, y, size)
-        self.width = 1
-        self.rect_from_image(45)
+    def __init__(self, x, y, width, size) -> None:
+        super().__init__(x, y, width, size)
     
     def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
@@ -253,10 +251,8 @@ class RailDTB(WallDTB):
 
 
 class RailDBT(WallDBT):
-    def __init__(self, x, y, size) -> None:
-        super().__init__(x, y, size)
-        self.width = 1
-        self.rect_from_image(315)
+    def __init__(self, x, y, width, size) -> None:
+        super().__init__(x, y, width, size)
 
     def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
@@ -508,21 +504,21 @@ class Table(object):
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
     def launchlane(self) -> None:
-        self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, self.height - 140))
-        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 20))
+        self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, 5, self.height - 140))
+        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 5, 20))
 
     def exitlanes(self) -> None:
-        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 70))
-        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 70))
+        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 5, 70))
+        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 5, 70))
 
     def borders(self) -> None:
-        self.walls.add(WallH(self.l_guide, self.t_guide, self.width))
-        self.walls.add(WallV(self.l_guide, self.t_guide, self.height))
-        self.walls.add(WallV(self.r_guide, self.t_guide, self.height))
-        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 100))
-        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 100))
-        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, self.width / 2))
-        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, self.width / 2))
+        self.walls.add(WallH(self.l_guide, self.t_guide, 5, self.width))
+        self.walls.add(WallV(self.l_guide, self.t_guide, 5, self.height))
+        self.walls.add(WallV(self.r_guide, self.t_guide, 5, self.height))
+        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 5, 100))
+        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 5, 100))
+        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, 1, self.width / 2))
+        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, 1, self.width / 2))
 
     def flippers(self) -> None:
         self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
