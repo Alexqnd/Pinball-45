@@ -406,15 +406,15 @@ class DebugLauncher(Launcher):
         self.angle += 22.5 / self.grit
         if self.angle >= 360:
             self.angle -= 360
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
+        self.rotate_image()
+        self.rect_center()
     
     def rotate_right(self) -> None:
         self.angle -= 22.5 / self.grit
         if self.angle < 0:
             self.angle += 360
-        self.image = pygame.transform.rotate(self.image_template, self.angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
+        self.rotate_image()
+        self.rect_center()
 
     def increase_force(self) -> None:
         self.force += 50 / self.grit
