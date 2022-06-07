@@ -254,10 +254,6 @@ class Flipper(TableObject, ABC):
 
     def flip_image(self, on_x, on_y) -> None:
         self.image = pygame.transform.flip(self.image_template, on_x, on_y)
-        self.scale_image()
-
-    def scale_image(self) -> None:
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
     @abstractmethod
     def move(self) -> None:
@@ -275,7 +271,6 @@ class Flipper(TableObject, ABC):
 class LeftFlipper(Flipper):
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
-        self.scale_image()
         self.generate_rect()
    
     def move(self) -> None:
