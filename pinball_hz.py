@@ -112,7 +112,6 @@ class TableObject(pygame.sprite.Sprite, ABC):
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
 
     def rotate_image(self, angle):
-        self.scale_image()
         self.image_template = self.image
         self.image = pygame.transform.rotate(self.image_template, angle)
 
@@ -154,6 +153,7 @@ class Wall(TableObject, ABC):
         super().__init__(pos_x, pos_y, width, size)
         self.preserved_energy = 0.9
         self.load_image("wall.png")
+        self.scale_image()
 
     def rect_from_image(self, angle) -> None:
         self.rotate_image(angle)
@@ -349,6 +349,7 @@ class ChargedLauncher(Launcher):
     def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, angle, force, ball)
         self.load_image("chargedlauncher.png")
+        self.scale_image()
         self.generate_rect()
         self.charging = False
         self.charge_speed = 1000
@@ -405,6 +406,7 @@ class DebugLauncher(Launcher):
     def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, angle, force, ball)
         self.load_image("debuglauncher.png")
+        self.scale_image()
         self.grit = 1
         self.generate_rect()
 
