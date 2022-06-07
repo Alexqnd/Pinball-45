@@ -261,6 +261,7 @@ class Flipper(TableObjectFixed, ABC):
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.image_template = self.image
+        self.load_sound("flipper.wav")
 
     def generate_rect(self) -> None:
         self.rect.left = self.pos_x
@@ -268,7 +269,7 @@ class Flipper(TableObjectFixed, ABC):
 
     @abstractmethod
     def move(self) -> None:
-        pass
+        self.sound.play()
 
     @abstractmethod
     def move_back(self) -> None:
@@ -285,6 +286,7 @@ class LeftFlipper(Flipper):
         self.generate_rect()
    
     def move(self) -> None:
+        super(LeftFlipper, self).move()
         self.flip_image(False, True)
 
     def move_back(self) -> None:
@@ -301,6 +303,7 @@ class RightFlipper(Flipper):
         self.generate_rect()
         
     def move(self) -> None:
+        super(RightFlipper, self).move()
         self.flip_image(True, True)
 
     def move_back(self) -> None:
