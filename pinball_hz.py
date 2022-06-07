@@ -108,11 +108,11 @@ class TableObject(pygame.sprite.Sprite, ABC):
     def load_image(self, image_name = str) -> None:
         self.image = pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
 
-    def scale_image(self, width, height) -> None:
-        self.image = pygame.transform.scale(self.image, (width, height)).convert_alpha()
+    def scale_image(self) -> None:
+        self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
 
-    def rotate_image(self, width, size, angle):
-        self.scale_image(width, size)
+    def rotate_image(self, angle):
+        self.scale_image()
         self.image_template = self.image
         self.image = pygame.transform.rotate(self.image_template, angle)
 
@@ -134,7 +134,7 @@ class Ball(TableObject):
     def __init__(self, pos_x, pos_y, width, height) -> None:
         super().__init__(pos_x, pos_y, width, height)
         self.load_image("ball.png")
-        self.scale_image(width, height)
+        self.scale_image()
         self.rect_center()
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
@@ -156,7 +156,7 @@ class Wall(TableObject, ABC):
         self.load_image("wall.png")
 
     def rect_from_image(self, angle) -> None:
-        self.rotate_image(self.width, self.height, angle)
+        self.rotate_image(angle)
         self.rect_topleft()
 
     @abstractmethod
@@ -237,7 +237,7 @@ class WallDBT(Wall):
         ball.sprite.rect.centery += y
 
     def rect_from_image(self, angle) -> None:
-        self.rotate_image(self.width, self.height, angle)
+        self.rotate_image(angle)
         self.rect_topright()
 
 
@@ -340,7 +340,7 @@ class Launcher(TableObject):
         self.ball.sprite.rect.center = (self.pos_x, self.pos_y)
 
     def generate_rect(self) -> None:
-        self.rotate_image(self.width, self.height, self.angle)
+        self.rotate_image(self.angle)
         self.rect_center()
 
 
