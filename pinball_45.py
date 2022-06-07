@@ -293,7 +293,11 @@ class LeftFlipper(Flipper):
         self.flip_image(False, False)
 
     def control_ball(self) -> None:
-        self.ball.sprite.direction[1] = -3000
+        if self.ball.sprite.rect.centerx > self.rect.centerx:
+            self.ball.sprite.direction[0] += 100
+        else:
+            self.ball.sprite.direction[0] -= 100
+        self.ball.sprite.direction[1] = -2000
     
 
 class RightFlipper(Flipper):
@@ -310,6 +314,10 @@ class RightFlipper(Flipper):
         self.flip_image(True, False)
 
     def control_ball(self) -> None:
+        if self.ball.sprite.rect.centerx > self.rect.centerx:
+            self.ball.sprite.direction[0] -= 100
+        else:
+            self.ball.sprite.direction[0] += 100
         self.ball.sprite.direction[1] = -3000
 
 
