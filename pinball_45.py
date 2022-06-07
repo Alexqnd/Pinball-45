@@ -9,7 +9,7 @@ class Settings(object):
     window = {'width': 800, 'height': 800}
     fps = 120
     deltatime = 1.0 / fps
-    title = "Pinball-Hz"
+    title = "Pinball 45"
     path = {}
     path['file'] = os.path.dirname(os.path.abspath(__file__))
     path['image'] = os.path.join(path['file'], "images")
