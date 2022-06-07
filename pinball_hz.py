@@ -98,42 +98,43 @@ class Timer(object):
 
 #Every object on the table
 class TableObject(pygame.sprite.Sprite, ABC):
-    def __init__(self, pos_x, pos_y, width, height) -> None:
+    def __init__(self, pos_x, pos_y, width, height, image_name) -> None:
         super().__init__()
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.width = width
         self.height = height
+        self.image_name = image_name
+        self.load_image()
+        self.scale_image()
 
-    def load_image(self, image_name = str) -> None:
-        self.image = pygame.image.load(Settings.imagepath(image_name)).convert_alpha()
+    def load_image(self) -> None:
+        self.image = pygame.image.load(Settings.imagepath(self.image_name)).convert_alpha()
 
     def scale_image(self) -> None:
         self.image = pygame.transform.scale(self.image, (self.width, self.height)).convert_alpha()
 
-    def rotate_image(self, angle):
+    def rotate_image(self, angle) -> None:
         self.image_template = self.image
         self.image = pygame.transform.rotate(self.image_template, angle)
 
-    def rect_center(self):
+    def rect_center(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.center = (self.pos_x, self.pos_y)
 
-    def rect_topleft(self):
+    def rect_topleft(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.pos_x, self.pos_y)
 
-    def rect_topright(self):
+    def rect_topright(self) -> None:
         self.rect = self.image.get_rect()
         self.rect.topright = (self.pos_x, self.pos_y)
 
 
 #Ball on the Pinball-table
 class Ball(TableObject):
-    def __init__(self, pos_x, pos_y, width, height) -> None:
-        super().__init__(pos_x, pos_y, width, height)
-        self.load_image("ball.png")
-        self.scale_image()
+    def __init__(self, pos_x, pos_y, width, height, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name)
         self.rect_center()
         self.pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         self.direction = pygame.Vector2(0, 0)
@@ -149,11 +150,9 @@ class Ball(TableObject):
 
 #Walls of the table to keep the ball inside
 class Wall(TableObject, ABC):
-    def __init__(self, pos_x, pos_y, width, size) -> None:
-        super().__init__(pos_x, pos_y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
         self.preserved_energy = 0.9
-        self.load_image("wall.png")
-        self.scale_image()
 
     def rect_from_image(self, angle) -> None:
         self.rotate_image(angle)
@@ -171,8 +170,8 @@ class Wall(TableObject, ABC):
 
 #Vertical Wall
 class WallV(Wall):
-    def __init__(self, pos_x, pos_y, width, size) -> None:
-        super().__init__(pos_x, pos_y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
         self.rect_from_image(0)
 
     def reflect(self, ball) -> None:
@@ -189,8 +188,8 @@ class WallV(Wall):
 
 #Horizontal Wall
 class WallH(Wall):
-    def __init__(self, pos_x, pos_y, width, size) -> None:
-        super().__init__(pos_x, pos_y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
         self.rect_from_image(90)
 
     def reflect(self, ball) -> None:
@@ -207,8 +206,8 @@ class WallH(Wall):
 
 #Diagonal Wall top to bottom
 class WallDTB(Wall):
-    def __init__(self, pos_x, pos_y, width, size) -> None:    
-        super().__init__(pos_x, pos_y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
         self.rect_from_image(45)
 
     def reflect(self, ball) -> None:
@@ -223,8 +222,8 @@ class WallDTB(Wall):
 
 #Diagonal Wall bottom to top
 class WallDBT(Wall):
-    def __init__(self, pos_x, pos_y, width, size) -> None:    
-        super().__init__(pos_x, pos_y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
         self.rect_from_image(315)
 
     def reflect(self, ball) -> None:
@@ -242,10 +241,9 @@ class WallDBT(Wall):
 
 
 class Flipper(TableObject, ABC):
-    def __init__(self, pos_x, pos_y, width, height, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name)
         self.ball = ball
-        self.load_image("flipper.png")
         self.image_template = self.image
 
     def generate_rect(self) -> None:
@@ -275,8 +273,8 @@ class Flipper(TableObject, ABC):
 
 
 class LeftFlipper(Flipper):
-    def __init__(self, pos_x, pos_y, width, height, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height, ball)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.scale_image()
         self.generate_rect()
    
@@ -291,8 +289,8 @@ class LeftFlipper(Flipper):
     
 
 class RightFlipper(Flipper):
-    def __init__(self, pos_x, pos_y, width, height, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height, ball)
+    def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.flip_image(True, False)   
         self.generate_rect()
         
@@ -307,8 +305,8 @@ class RightFlipper(Flipper):
 
 
 class RailDTB(WallDTB):
-    def __init__(self, x, y, width, size) -> None:
-        super().__init__(x, y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
     
     def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) - (ball.sprite.rect.centerx - self.rect.centerx)
@@ -316,8 +314,8 @@ class RailDTB(WallDTB):
 
 
 class RailDBT(WallDBT):
-    def __init__(self, x, y, width, size) -> None:
-        super().__init__(x, y, width, size)
+    def __init__(self, pos_x, pos_y, width, size, image_name) -> None:
+        super().__init__(pos_x, pos_y, width, size, image_name)
 
     def connect_ball(self, ball) -> None:
         y = (ball.sprite.rect.centery - self.rect.centery) + (ball.sprite.rect.centerx - self.rect.centerx)
@@ -326,8 +324,8 @@ class RailDBT(WallDBT):
 
 #Launches the ball where it is in a given angle with a given force
 class Launcher(TableObject):
-    def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height)
+    def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name)
         self.angle = angle
         self.force = force
         self.ball = ball
@@ -346,10 +344,8 @@ class Launcher(TableObject):
 
 #Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
-    def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height, angle, force, ball)
-        self.load_image("chargedlauncher.png")
-        self.scale_image()
+    def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, angle, force, ball)
         self.generate_rect()
         self.charging = False
         self.charge_speed = 1000
@@ -403,10 +399,8 @@ class ChargedLauncher(Launcher):
         
 #For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
-    def __init__(self, pos_x, pos_y, width, height, angle, force, ball) -> None:
-        super().__init__(pos_x, pos_y, width, height, angle, force, ball)
-        self.load_image("debuglauncher.png")
-        self.scale_image()
+    def __init__(self, pos_x, pos_y, width, height, image_name, angle, force, ball) -> None:
+        super().__init__(pos_x, pos_y, width, height, image_name, angle, force, ball)
         self.grit = 1
         self.generate_rect()
 
@@ -480,8 +474,8 @@ class Table(object):
         self.chargedlauncher.sprite.reset()
 
     def objects(self) -> None:
-        self.ball = pygame.sprite.GroupSingle(Ball(self.r_guide - 17, self.t_guide + 50, 25, 25))
-        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 25, 30, 0, 2000, self.ball))
+        self.ball = pygame.sprite.GroupSingle(Ball(self.r_guide - 17, self.t_guide + 50, 25, 25, "ball.png"))
+        self.chargedlauncher = pygame.sprite.GroupSingle(ChargedLauncher(self.r_guide - 17, self.b_guide - 140, 25, 30, "chargedlauncher.png", 0, 2000, self.ball))
         self.chargedlauncher.sprite.place_ball()
         self.walls = pygame.sprite.Group()
         self.rails = pygame.sprite.Group()
@@ -489,29 +483,29 @@ class Table(object):
         self.exitlanes()
         self.borders()
         self.flippers()
-        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, 0, 600, self.ball))
+        self.debuglauncher = pygame.sprite.GroupSingle(DebugLauncher(440, 120, 25, 25, "debuglauncher.png", 0, 600, self.ball))
         self.score = Score(self.cx_guide, self.t_guide * 2)
 
     def launchlane(self) -> None:
-        self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, 5, self.height - 140))
-        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 5, 20))
+        self.walls.add(WallV(self.r_guide - 40, self.t_guide + 40, 5, self.height - 140, "wall.png"))
+        self.walls.add(WallDTB(self.r_guide - 13, self.t_guide, 5, 20, "wall.png"))
 
     def exitlanes(self) -> None:
-        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 5, 70))
-        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 5, 70))
+        self.walls.add(WallDTB(self.l_guide + 40, self.b_guide - 198, 5, 70, "wall.png"))
+        self.walls.add(WallDBT(self.r_guide - 76, self.b_guide - 197, 5, 70, "wall.png"))
 
     def borders(self) -> None:
-        self.walls.add(WallH(self.l_guide, self.t_guide, 5, self.width))
-        self.walls.add(WallV(self.l_guide, self.t_guide, 5, self.height))
-        self.walls.add(WallV(self.r_guide, self.t_guide, 5, self.height))
-        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 5, 100))
-        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 5, 100))
-        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, 1, self.width / 2))
-        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, 1, self.width / 2))
+        self.walls.add(WallH(self.l_guide, self.t_guide, 5, self.width, "wall.png"))
+        self.walls.add(WallV(self.l_guide, self.t_guide, 5, self.height, "wall.png"))
+        self.walls.add(WallV(self.r_guide, self.t_guide, 5, self.height, "wall.png"))
+        self.walls.add(WallDTB(self.l_guide, self.b_guide - 179, 5, 100, "wall.png"))
+        self.walls.add(WallDBT(self.r_guide - 36, self.b_guide - 177, 5, 100, "wall.png"))
+        self.rails.add(RailDTB(self.l_guide + 34, self.b_guide - 172, 1, self.width / 2, "wall.png"))
+        self.rails.add(RailDBT(self.r_guide - 70, self.b_guide - 172, 1, self.width / 2, "wall.png"))
 
     def flippers(self) -> None:
-        self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, self.ball))
-        self.rightflipper = pygame.sprite.GroupSingle(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, self.ball))
+        self.leftflipper = pygame.sprite.GroupSingle(LeftFlipper(self.l_guide + 90, self.b_guide - 148, 100, 100, "flipper.png", self.ball))
+        self.rightflipper = pygame.sprite.GroupSingle(RightFlipper(self.r_guide - 226, self.b_guide - 147, 100, 100, "flipper.png", self.ball))
 
     #Collision between ball and another group
     def collision(self, collidegroup):
