@@ -1,21 +1,54 @@
 <?xml version="1.0"?>
 <!DOCTYPE lmms-project>
-<lmms-project version="1.0" type="instrumenttracksettings" creatorversion="1.2.1" creator="LMMS">
+<lmms-project creatorversion="1.3.0-alpha.1.102+g89fc6c9" version="20" creator="LMMS" type="instrumenttracksettings">
   <head/>
-  <instrumenttracksettings solo="1" name="new_game" type="0" muted="0">
-    <instrumenttrack pitch="0" pan="0" usemasterpitch="1" basenote="57" pitchrange="1" vol="100" fxch="0">
-      <instrument name="tripleoscillator">
-        <tripleoscillator stphdetun1="0" phoffset1="0" phoffset0="0" coarse0="0" modalgo2="3" finer0="0" finel2="0" coarse2="6" pan2="0" userwavefile0="" modalgo3="2" stphdetun2="0" pan0="0" vol1="33" stphdetun0="0" finel1="0" finel0="0" userwavefile1="" finer2="0" vol2="33" wavetype2="0" userwavefile2="" modalgo1="2" pan1="0" vol0="33" finer1="0" phoffset2="0" coarse1="-12" wavetype1="0" wavetype0="0"/>
+  <instrumenttracksettings solo="1" name="newgame" muted="0" mutedBeforeSolo="0" type="0">
+    <instrumenttrack pitchrange="1" usemasterpitch="1" fxch="2" enablecc="0" basenote="69" lastkey="127" pan="0" pitch="0" firstkey="0" vol="24.8">
+      <midicontrollers cc7="0" cc42="0" cc69="0" cc4="0" cc74="0" cc20="0" cc103="0" cc14="0" cc18="0" cc50="0" cc112="0" cc84="0" cc94="0" cc85="0" cc28="0" cc75="0" cc102="0" cc109="0" cc41="0" cc47="0" cc86="0" cc36="0" cc116="0" cc113="0" cc90="0" cc56="0" cc101="0" cc87="0" cc1="0" cc49="0" cc104="0" cc31="0" cc30="0" cc24="0" cc43="0" cc52="0" cc63="0" cc115="0" cc72="0" cc122="0" cc51="0" cc16="0" cc120="0" cc39="0" cc95="0" cc34="0" cc32="0" cc61="0" cc68="0" cc13="0" cc107="0" cc117="0" cc45="0" cc73="0" cc15="0" cc78="0" cc114="0" cc29="0" cc6="0" cc66="0" cc80="0" cc44="0" cc83="0" cc81="0" cc46="0" cc22="0" cc27="0" cc62="0" cc65="0" cc3="0" cc121="0" cc12="0" cc33="0" cc125="0" cc5="0" cc76="0" cc70="0" cc99="0" cc124="0" cc64="0" cc77="0" cc17="0" cc60="0" cc97="0" cc57="0" cc67="0" cc54="0" cc110="0" cc10="0" cc111="0" cc96="0" cc21="0" cc93="0" cc40="0" cc48="0" cc53="0" cc2="0" cc123="0" cc119="0" cc58="0" cc19="0" cc98="0" cc106="0" cc118="0" cc88="0" cc9="0" cc126="0" cc37="0" cc89="0" cc108="0" cc35="0" cc0="0" cc105="0" cc79="0" cc11="0" cc38="0" cc92="0" cc55="0" cc25="0" cc91="0" cc59="0" cc23="0" cc8="0" cc127="0" cc82="0" cc100="0" cc26="0" cc71="0"/>
+      <instrument name="lb302">
+        <lb302 slide_dec="0.28" slide="0" vcf_cut="0.345" dist="0.07" dead="0" db24="0" vcf_res="0.295" shape="1" vcf_dec="0.12" vcf_mod="0.325">
+          <key/>
+        </lb302>
       </instrument>
-      <eldata fwet="1" fcut="518" fres="0.5" ftype="1">
-        <elvol latt="0" lspd_numerator="4" pdel="0" lshp="0" dec="0.5" x100="0" ctlenvamt="0" amt="1" lspd="0.1" att="0" lpdel="0" rel="0.1" sustain="0.5" hold="0.5" lspd_denominator="4" lspd_syncmode="0" userwavefile="" lamt="0"/>
-        <elcut latt="0" lspd_numerator="4" pdel="0" lshp="0" dec="0.5" x100="0" ctlenvamt="0" amt="0" lspd="0.1" att="0" lpdel="0" rel="0.1" sustain="0.5" hold="0.5" lspd_denominator="4" lspd_syncmode="0" userwavefile="" lamt="0"/>
-        <elres latt="0" lspd_numerator="4" pdel="0" lshp="0" dec="0.5" x100="0" ctlenvamt="0" amt="0" lspd="0.1" att="0" lpdel="0" rel="0.1" sustain="0.5" hold="0.5" lspd_denominator="4" lspd_syncmode="0" userwavefile="" lamt="0"/>
+      <eldata fres="9.6" fwet="0" fcut="3360" ftype="7">
+        <elvol lpdel="0" ctlenvamt="0" dec="0.5" lspd_syncmode="0" att="0" rel="0.1" lshp="0" amt="0" hold="0.5" lamt="0" lspd_denominator="4" lspd_numerator="4" latt="0" lspd="0.1" x100="0" pdel="0" sustain="0.5" userwavefile=""/>
+        <elcut lpdel="0" ctlenvamt="0" dec="0.5" lspd_syncmode="0" att="0" rel="0.1" lshp="0" amt="0" hold="0.5" lamt="0" lspd_denominator="4" lspd_numerator="4" latt="0" lspd="0.1" x100="0" pdel="0" sustain="0.5" userwavefile=""/>
+        <elres lpdel="0" ctlenvamt="0" dec="0.5" lspd_syncmode="0" att="0" rel="0.1" lshp="0" amt="0" hold="0.5" lamt="0" lspd_denominator="4" lspd_numerator="4" latt="0" lspd="0.1" x100="0" pdel="0" sustain="0.5" userwavefile=""/>
       </eldata>
-      <chordcreator chord-enabled="0" chordrange="1" chord="0"/>
-      <arpeggiator arprange="3" arp-enabled="0" arptime_numerator="4" arptime="157" arpdir="0" arp="3" arpskip="34" arptime_denominator="4" arpgate="100" arptime_syncmode="0" arpmiss="0" arpmode="0" arpcycle="0"/>
-      <midiport inputchannel="0" outputcontroller="0" fixedoutputnote="-1" readable="0" writable="0" outputchannel="1" fixedoutputvelocity="-1" outputprogram="1" basevelocity="63" inputcontroller="0" fixedinputvelocity="-1"/>
-      <fxchain numofeffects="0" enabled="0"/>
+      <chordcreator chordrange="1" chord-enabled="0" chord="0"/>
+      <arpeggiator arpskip="0" arptime_denominator="4" arptime="100" arp-enabled="0" arpmiss="0" arprange="1" arp="0" arpcycle="0" arptime_syncmode="0" arprepeats="1" arpdir="0" arpmode="0" arptime_numerator="4" arpgate="100"/>
+      <fxchain enabled="1" numofeffects="1">
+        <effect wet="1" autoquit_syncmode="0" autoquit_numerator="4" gate="0" name="ladspaeffect" on="0" autoquit="8000" autoquit_denominator="4">
+          <ladspacontrols ports="20">
+            <port04 data="1"/>
+            <port05 data="1"/>
+            <port06 data="1"/>
+            <port015 data="16"/>
+            <port016 data="8"/>
+            <port017 data="8"/>
+            <port018 data="0.116"/>
+            <port019 data="0.3"/>
+            <port020 data="2"/>
+            <port021 data="1"/>
+            <port022 data="0.3"/>
+            <port023 data="1"/>
+            <port024 data="0"/>
+            <port025 data="4"/>
+            <port026 data="4"/>
+            <port027 data="0"/>
+            <port028 data="144"/>
+            <port029 data="1005"/>
+            <port030>
+              <data value="1" id="1846865" scale_type="log"/>
+            </port030>
+            <port031 data="150.5"/>
+          </ladspacontrols>
+          <key>
+            <attribute name="file" value="veal"/>
+            <attribute name="plugin" value="VintageDelay"/>
+          </key>
+        </effect>
+      </fxchain>
     </instrumenttrack>
   </instrumenttracksettings>
 </lmms-project>

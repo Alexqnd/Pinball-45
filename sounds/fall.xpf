@@ -1,20 +1,22 @@
 <?xml version="1.0"?>
 <!DOCTYPE lmms-project>
-<lmms-project type="instrumenttracksettings" version="1.0" creatorversion="1.2.1" creator="LMMS">
+<lmms-project creatorversion="1.3.0-alpha.1.102+g89fc6c9" version="20" creator="LMMS" type="instrumenttracksettings">
   <head/>
-  <instrumenttracksettings type="0" muted="0" name="fall" solo="0">
-    <instrumenttrack pitch="0" basenote="57" usemasterpitch="1" pan="0" fxch="0" vol="100" pitchrange="12">
+  <instrumenttracksettings solo="1" name="launch" muted="0" mutedBeforeSolo="0" type="0">
+    <instrumenttrack pitchrange="1" usemasterpitch="1" fxch="0" enablecc="0" basenote="69" lastkey="127" pan="0" pitch="0" firstkey="0" vol="76.8">
+      <midicontrollers cc7="0" cc42="0" cc69="0" cc4="0" cc74="0" cc20="0" cc103="0" cc14="0" cc18="0" cc50="0" cc112="0" cc84="0" cc94="0" cc85="0" cc28="0" cc75="0" cc102="0" cc109="0" cc41="0" cc47="0" cc86="0" cc36="0" cc116="0" cc113="0" cc90="0" cc56="0" cc101="0" cc87="0" cc1="0" cc49="0" cc104="0" cc31="0" cc30="0" cc24="0" cc43="0" cc52="0" cc63="0" cc115="0" cc72="0" cc122="0" cc51="0" cc16="0" cc120="0" cc39="0" cc95="0" cc34="0" cc32="0" cc61="0" cc68="0" cc13="0" cc107="0" cc117="0" cc45="0" cc73="0" cc15="0" cc78="0" cc114="0" cc29="0" cc6="0" cc66="0" cc80="0" cc44="0" cc83="0" cc81="0" cc46="0" cc22="0" cc27="0" cc62="0" cc65="0" cc3="0" cc121="0" cc12="0" cc33="0" cc125="0" cc5="0" cc76="0" cc70="0" cc99="0" cc124="0" cc64="0" cc77="0" cc17="0" cc60="0" cc97="0" cc57="0" cc67="0" cc54="0" cc110="0" cc10="0" cc111="0" cc96="0" cc21="0" cc93="0" cc40="0" cc48="0" cc53="0" cc2="0" cc123="0" cc119="0" cc58="0" cc19="0" cc98="0" cc106="0" cc118="0" cc88="0" cc9="0" cc126="0" cc37="0" cc89="0" cc108="0" cc35="0" cc0="0" cc105="0" cc79="0" cc11="0" cc38="0" cc92="0" cc55="0" cc25="0" cc91="0" cc59="0" cc23="0" cc8="0" cc127="0" cc82="0" cc100="0" cc26="0" cc71="0"/>
       <instrument name="sfxr">
-        <sfxr changeAmt="0" hpFilCutSweep="0" vibDepth="0" waveForm="1" phaserOffset="0" slide="-0.34422" lpFilCut="1" hpFilCut="0.14277" lpFilReso="0" sqrDuty="0.2322" repeatSpeed="0" dSlide="0" sqrSweep="0.2" minFreq="0.69829" changeSpeed="0" phaserSweep="0" hold="0.2039" vibSpeed="0" lpFilCutSweep="0" att="0" dec="0.13572" version="1" sus="0" startFreq="0.93975"/>
+        <sfxr phaserOffset="-0.766" sqrDuty="0.679" dec="0.44468" sus="0.591206" att="0" hpFilCutSweep="-0.117357" startFreq="0.776978" hold="0.34" vibDepth="0.606202" repeatSpeed="0.77103" vibSpeed="0.86499" changeSpeed="0.71031" changeAmt="-0.0382" phaserSweep="-0.253315" lpFilCut="0.792886" hpFilCut="0.0985018" slide="-0.184" lpFilCutSweep="0.944722" sqrSweep="0.04" version="1" lpFilReso="0.04556" waveForm="2" minFreq="0.18" dSlide="-0.326763">
+          <key/>
+        </sfxr>
       </instrument>
-      <eldata fcut="14000" fres="0.5" fwet="0" ftype="0">
-        <elvol amt="0" x100="0" pdel="0" lamt="0" lpdel="0" lspd_syncmode="0" rel="0.1" lshp="0" userwavefile="" hold="0.5" lspd="0.1" ctlenvamt="0" lspd_denominator="4" lspd_numerator="4" att="0" dec="0.5" sustain="0.5" latt="0"/>
-        <elcut amt="0" x100="0" pdel="0" lamt="0" lpdel="0" lspd_syncmode="0" rel="0.1" lshp="0" userwavefile="" hold="0.5" lspd="0.1" ctlenvamt="0" lspd_denominator="4" lspd_numerator="4" att="0" dec="0.5" sustain="0.5" latt="0"/>
-        <elres amt="0" x100="0" pdel="0" lamt="0" lpdel="0" lspd_syncmode="0" rel="0.1" lshp="0" userwavefile="" hold="0.5" lspd="0.1" ctlenvamt="0" lspd_denominator="4" lspd_numerator="4" att="0" dec="0.5" sustain="0.5" latt="0"/>
+      <eldata fres="0.5" fwet="0" fcut="14000" ftype="0">
+        <elvol lpdel="0" ctlenvamt="0" dec="0.5" lspd_syncmode="0" att="0" rel="0.1" lshp="0" amt="1" hold="0.5" lamt="0" lspd_denominator="4" lspd_numerator="4" latt="0" lspd="0.1" x100="0" pdel="0" sustain="0.5" userwavefile=""/>
+        <elcut lpdel="0" ctlenvamt="0" dec="0.5" lspd_syncmode="0" att="0" rel="0.1" lshp="0" amt="0" hold="0.5" lamt="0" lspd_denominator="4" lspd_numerator="4" latt="0" lspd="0.1" x100="0" pdel="0" sustain="0.5" userwavefile=""/>
+        <elres lpdel="0" ctlenvamt="0" dec="0.5" lspd_syncmode="0" att="0" rel="0.1" lshp="0" amt="0" hold="0.5" lamt="0" lspd_denominator="4" lspd_numerator="4" latt="0" lspd="0.1" x100="0" pdel="0" sustain="0.5" userwavefile=""/>
       </eldata>
-      <chordcreator chord="0" chordrange="1" chord-enabled="0"/>
-      <arpeggiator arp-enabled="0" arp="0" arpmode="0" arpgate="100" arpskip="0" arptime_syncmode="0" arptime="200" arprange="1" arpcycle="0" arpmiss="0" arpdir="0" arptime_numerator="4" arptime_denominator="4"/>
-      <midiport readable="0" writable="0" inputcontroller="0" outputprogram="1" inputchannel="0" outputcontroller="0" outputchannel="1" basevelocity="63" fixedinputvelocity="-1" fixedoutputvelocity="-1" fixedoutputnote="-1"/>
+      <chordcreator chordrange="1" chord-enabled="0" chord="0"/>
+      <arpeggiator arpskip="0" arptime_denominator="4" arptime="200" arp-enabled="0" arpmiss="0" arprange="1" arp="0" arpcycle="0" arptime_syncmode="0" arprepeats="1" arpdir="0" arpmode="0" arptime_numerator="4" arpgate="100"/>
       <fxchain enabled="0" numofeffects="0"/>
     </instrumenttrack>
   </instrumenttracksettings>
