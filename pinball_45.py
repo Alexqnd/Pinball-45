@@ -26,6 +26,7 @@ from abc import ABC, abstractmethod
 
 
 class Settings(object):
+    """class with pygame settings, cannot be changed by user"""
     window = {"width": 800, "height": 800}
     fps = 120
     deltatime = 1.0 / fps
@@ -48,8 +49,8 @@ class Settings(object):
         return os.path.join(Settings.path["sound"], name)
 
 
-# Displaying Text
 class Display(pygame.sprite.Sprite):
+    """class displaying text on the table"""
     def __init__(self, pos_x, pos_y, text) -> None:
         super().__init__()
         self.pos_x = pos_x
@@ -81,6 +82,7 @@ class Display(pygame.sprite.Sprite):
 
 
 class Score(pygame.sprite.Sprite):
+    """class managing and displaying the score"""
     def __init__(self, pos_x, pos_y) -> None:
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -99,8 +101,8 @@ class Score(pygame.sprite.Sprite):
         self.scoredisplay.draw(screen)
 
 
-# Returns if a certain time has passed
 class Timer(object):
+    """returns if a certain time has passed"""
     def __init__(self, duration, with_start=True) -> None:
         self.duration = duration
         if with_start:
@@ -120,8 +122,8 @@ class Timer(object):
             self.duration = 0
 
 
-# Every object on the table
 class TableObject(pygame.sprite.Sprite, ABC):
+    """abstract class for an object on the table"""
     def __init__(self, pos_x, pos_y, width, height, image_name) -> None:
         super().__init__()
         self.pos_x = pos_x
@@ -169,8 +171,8 @@ class TableObject(pygame.sprite.Sprite, ABC):
         return pygame.mixer.Sound((Settings.soundpath(sound_name)))
 
 
-# Ball on the Pinball-table
 class Ball(TableObject):
+    """class for the ball on the pinball-table"""
     def __init__(self, pos_x, pos_y, width, height, image_name) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name)
         self.rect_center()
@@ -187,6 +189,7 @@ class Ball(TableObject):
 
 
 class TableObjectFixed(TableObject, ABC):
+    """abstract class that are fixed to the table"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name)
         self.ball = ball
@@ -196,8 +199,8 @@ class TableObjectFixed(TableObject, ABC):
         pass
 
 
-# Walls of the table to keep the ball inside
 class Wall(TableObjectFixed, ABC):
+    """class for table walls to keep the ball inside"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.preserved_energy = 0.9
@@ -216,8 +219,8 @@ class Wall(TableObjectFixed, ABC):
         pass
 
 
-# Vertical Wall
 class WallV(Wall):
+    """class for vertical wall"""
     def __init__(self, pos_x, pos_y, width, size, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, size, image_name, ball)
         self.rotate_image(0)
@@ -236,8 +239,8 @@ class WallV(Wall):
             self.ball.sprite.rect.right = self.rect.left - 1
 
 
-# Horizontal Wall
 class WallH(Wall):
+    """class for the horinzontal wall"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.rotate_image(90)
@@ -256,8 +259,8 @@ class WallH(Wall):
             self.ball.sprite.rect.bottom = self.rect.top - 1
 
 
-# Diagonal Wall top to bottom
 class WallDTB(Wall):
+    """class for diagonal wall top to bottom"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.rotate_image(45)
@@ -276,8 +279,8 @@ class WallDTB(Wall):
         self.ball.sprite.rect.centery += y
 
 
-# Diagonal Wall bottom to top
 class WallDBT(Wall):
+    """class for Diagonal Wall bottom to top"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.rotate_image(315)
@@ -298,6 +301,7 @@ class WallDBT(Wall):
 
 
 class Flipper(TableObjectFixed, ABC):
+    """abstract class for flippers"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.image_template = self.image
@@ -321,6 +325,7 @@ class Flipper(TableObjectFixed, ABC):
 
 
 class LeftFlipper(Flipper):
+    """class for the left flipper"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.generate_rect()
@@ -341,6 +346,7 @@ class LeftFlipper(Flipper):
 
 
 class RightFlipper(Flipper):
+    """class for the right flipper"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
         self.flip_image(True, False)
@@ -362,6 +368,7 @@ class RightFlipper(Flipper):
 
 
 class RailDTB(WallDTB):
+    """class for a rail that guides the ball diagonaly from top to bottom"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
 
@@ -373,6 +380,7 @@ class RailDTB(WallDTB):
 
 
 class RailDBT(WallDBT):
+    """class for a rail that guides the ball diagonaly from bottom to top"""
     def __init__(self, pos_x, pos_y, width, height, image_name, ball) -> None:
         super().__init__(pos_x, pos_y, width, height, image_name, ball)
 
@@ -383,8 +391,8 @@ class RailDBT(WallDBT):
         self.ball.sprite.rect.centerx -= y
 
 
-# Launches the ball where it is in a given angle with a given force
 class Launcher(TableObjectFixed, ABC):
+    """class for launcher that launches the ball where it is in a given angle with a given force"""
     def __init__(
         self, pos_x, pos_y, width, height, image_name, angle, force, ball
     ) -> None:
@@ -408,8 +416,8 @@ class Launcher(TableObjectFixed, ABC):
         pass
 
 
-# Launcher which will later charge when pressing space. Right now it launches with 100%
 class ChargedLauncher(Launcher):
+    "class for a Launcher which charges when pressing space. Currently also playing new game sound which is not its main task"
     def __init__(
         self, pos_x, pos_y, width, height, image_name, angle, force, ball, display
     ) -> None:
@@ -470,8 +478,8 @@ class ChargedLauncher(Launcher):
         self.ball.sprite.rect.centerx = self.pos_x
 
 
-# For testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key
 class DebugLauncher(Launcher):
+    """class for testing the ball-physics. Inherits from Launcher. Ball can be launched again with the r-key"""
     def __init__(
         self, pos_x, pos_y, width, height, image_name, angle, force, ball
     ) -> None:
@@ -534,6 +542,7 @@ class DebugLauncher(Launcher):
 
 
 class Table(object):
+    """class which holds all objects and is responsible to execute events"""
     def __init__(self) -> None:
         self.width = 500
         self.height = 700
@@ -779,6 +788,7 @@ class Table(object):
 
 
 class Background(object):
+    """class for the background of the game"""
     def __init__(self) -> None:
         super().__init__()
         self.image = pygame.image.load(os.path.join(Settings.imagepath("table.png")))
@@ -788,8 +798,8 @@ class Background(object):
         screen.blit(self.image, (0, 0))
 
 
-# main class
 class Game(object):
+    """main class"""
     def __init__(self) -> None:
         super().__init__()
         os.environ["SDL_VIDEO_WINDOW_POS"] = "10, 50"
